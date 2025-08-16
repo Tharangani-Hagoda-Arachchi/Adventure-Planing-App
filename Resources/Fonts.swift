@@ -7,12 +7,7 @@
 
 import SwiftUI
 
-struct Fonts: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+extension Font{
+    static let buttonLargeText = Font.system(size: 25, weight: .bold, design: .default)
 }
 
-#Preview {
-    Fonts()
-}

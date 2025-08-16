@@ -45,6 +45,26 @@
 			path = "Adventure Planing AppUITests";
 			sourceTree = "<group>";
 		};
+		EC91909D2E50C25200DE689E /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		EC91909E2E50C26F00DE689E /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EC91909F2E50C27A00DE689E /* ViewModels */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		EC9190B62E50C97E00DE689E /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +95,10 @@
 		EC91906A2E50C22E00DE689E = {
 			isa = PBXGroup;
 			children = (
+				EC9190B62E50C97E00DE689E /* Resources */,
+				EC91909F2E50C27A00DE689E /* ViewModels */,
+				EC91909E2E50C26F00DE689E /* Views */,
+				EC91909D2E50C25200DE689E /* Models */,
 				EC9190752E50C22E00DE689E /* Adventure Planing App */,
 				EC9190832E50C23200DE689E /* Adventure Planing AppTests */,
 				EC91908D2E50C23200DE689E /* Adventure Planing AppUITests */,
@@ -109,6 +133,10 @@
 			);
 			fileSystemSynchronizedGroups = (
 				EC9190752E50C22E00DE689E /* Adventure Planing App */,
+				EC91909D2E50C25200DE689E /* Models */,
+				EC91909E2E50C26F00DE689E /* Views */,
+				EC91909F2E50C27A00DE689E /* ViewModels */,
+				EC9190B62E50C97E00DE689E /* Resources */,
 			);
 			name = "Adventure Planing App";
 			packageProductDependencies = (
