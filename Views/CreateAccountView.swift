@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CreateAccountView: View {
+    @StateObject private var registerViewModel = CreateAccountViewModel()
+    
     var body: some View {
         NavigationStack{
             ZStack(alignment: .bottom){
@@ -33,6 +35,27 @@ struct CreateAccountView: View {
                     }
                     .padding()
                     .padding(.horizontal, 16)
+                    
+                    //create form using custom text field
+                    VStack(spacing: 12,){
+                        CustomTextFieldView(
+                            icon: "person.fill", placeHolder: "Name", text: $registerViewModel.name
+                        )
+                        CustomTextFieldView(
+                            icon: "envelope.fill", placeHolder: "Email", text: $registerViewModel.email
+                        )
+                        CustomTextFieldView(
+                            icon: "phone.fill", placeHolder: "Phone No", text: $registerViewModel.phone
+                        )
+                        CustomTextFieldView(
+                            icon: "lock.fill", placeHolder: "Password", isSecure: true, text: $registerViewModel.password
+                        )
+                        CustomTextFieldView(
+                            icon: "lock.fill", placeHolder: "Confirm Password", isSecure: true, text: $registerViewModel.confirmPassword
+                        )
+                        
+                        
+                    }
                     
                 }
                 .frame(maxWidth: .infinity)
