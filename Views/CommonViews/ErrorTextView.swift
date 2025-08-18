@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct ErrorTextView: View {
+    let error: String?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        if let error = error{
+            Text(error)
+                .foregroundColor(.red)
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 0.5)
+        }
+        
     }
 }
 
-#Preview {
-    ErrorTextView()
-}
+

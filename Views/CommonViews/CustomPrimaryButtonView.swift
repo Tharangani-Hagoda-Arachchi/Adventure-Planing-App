@@ -21,7 +21,7 @@ struct CustomPrimaryButtonView: View {
                 .padding(.vertical, 14)
                 .background((Color.AppPrimary))
                 .overlay(Capsule().stroke(Color.AppPrimary, lineWidth: 1))
-                .cornerRadius(15)
+                .cornerRadius(20)
                 .shadow(radius: 4)
         }
     }

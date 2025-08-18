@@ -39,24 +39,59 @@ struct CreateAccountView: View {
                     //create form using custom text field
                     VStack(spacing: 12,){
                         CustomTextFieldView(
-                            icon: "person.fill", placeHolder: "Name", text: $registerViewModel.name
+                            icon: "person.fill", placeHolder: "Name", text: $registerViewModel.name,displayError: registerViewModel.errorName != nil
                         )
+                        ErrorTextView(error: registerViewModel.errorName)
+                        
                         CustomTextFieldView(
                             icon: "envelope.fill", placeHolder: "Email", text: $registerViewModel.email
                         )
+                        ErrorTextView(error: registerViewModel.errorEmail)
+                        
                         CustomTextFieldView(
-                            icon: "phone.fill", placeHolder: "Phone No", text: $registerViewModel.phone
+                            icon: "phone.fill", placeHolder: "Phone No", text: $registerViewModel.phone,
                         )
+                        ErrorTextView(error: registerViewModel.errorPhone)
+                        
                         CustomTextFieldView(
                             icon: "lock.fill", placeHolder: "Password", isSecure: true, text: $registerViewModel.password
                         )
+                        ErrorTextView(error: registerViewModel.errorPassword)
+                        
                         CustomTextFieldView(
                             icon: "lock.fill", placeHolder: "Confirm Password", isSecure: true, text: $registerViewModel.confirmPassword
                         )
+                        ErrorTextView(error: registerViewModel.errorConfirmPassword)
                         
+                        //register button
+                        VStack{
+                            CustomPrimaryButtonView(title: "Register"){
+                                registerViewModel.validateCreateAccount()
+                                if registerViewModel.isValid{
+                                    print("tap register")
+                                    //logic with backend
+                                }
+                            }
+                            .padding(.top, 20)
+                            
+                            HStack{
+                                Text("Already have an account")
+                                    .font(Font.primarysSemiboldText)
+                                NavigationLink(destination: LoginView()){
+                                    Text("Login")
+                                        .font(Font.primarysSemiboldText)
+                                        .foregroundColor(Color.AppSecondary)
+                                    
+                                }
+                                
+                            }
+                            
+                            
+                        }
                         
                     }
-                    
+                    .padding(.bottom, 70)
+                    .padding(.horizontal, 16)
                 }
                 .frame(maxWidth: .infinity)
                 .background(Color.white)
@@ -64,7 +99,9 @@ struct CreateAccountView: View {
                 .shadow(radius: 5)
             }
             
+            
         }
+        .navigationBarHidden(true)
         
     }
 }

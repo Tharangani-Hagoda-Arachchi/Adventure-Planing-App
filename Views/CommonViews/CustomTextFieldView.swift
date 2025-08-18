@@ -11,10 +11,13 @@ struct CustomTextFieldView: View {
     var icon: String
     var placeHolder: String
     var isSecure: Bool = false
+
     
     @Binding var text: String
     @State private var isPasswordVisible: Bool = false
     @FocusState private var isTextFieldFocused: Bool
+    
+    var displayError: Bool = false
     
     var body: some View {
         HStack{
@@ -65,7 +68,7 @@ struct CustomTextFieldView: View {
         .cornerRadius(15)
         .overlay(
             RoundedRectangle(cornerRadius: 15)
-                .stroke(isTextFieldFocused ? Color.accentColor : Color.AppPrimary.opacity(0.2), lineWidth: 2)
+                .stroke(displayError ? .red : isTextFieldFocused ? Color.accentColor : Color.AppPrimary.opacity(0.2), lineWidth: 1)
             
         )
         
