@@ -68,8 +68,8 @@ struct CreateAccountView: View {
                             CustomPrimaryButtonView(title: "Register"){
                                 registerViewModel.validateCreateAccount()
                                 if registerViewModel.isValid{
-                                    print("tap register")
-                                    //logic with backend
+                                    //call register functin in view model
+                                    registerViewModel.useRegistration()
                                 }
                             }
                             .padding(.top, 20)
@@ -98,6 +98,17 @@ struct CreateAccountView: View {
                 .cornerRadius(30)
                 .shadow(radius: 5)
             }
+            
+            .alert(isPresented: $registerViewModel.showAlert){
+                Alert(
+                    title:Text(registerViewModel.alertTitle),
+                    message: Text(registerViewModel.alertMessage),
+                    dismissButton: .default(Text("OK"))
+                )
+                
+            }
+            
+            
             
             
         }

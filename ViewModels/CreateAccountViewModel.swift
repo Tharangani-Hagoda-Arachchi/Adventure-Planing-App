@@ -25,6 +25,12 @@ class CreateAccountViewModel : ObservableObject{
     
     //validation status
     @Published var isValid = false
+    
+    //alert
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    @Published var alertTitle = ""
+
 
     
     // validation check function
@@ -86,6 +92,66 @@ class CreateAccountViewModel : ObservableObject{
     private func isValidPassword(_ password: String) -> Bool {
         let passwordRegEx = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$"
         return NSPredicate(format: "SELF MATCHES %@", passwordRegEx).evaluate(with: password)
+    }
+    
+    //backend API call for registration
+    func useRegistration(){
+        //backend url
+        guard let url = URL(string: "http://localhost:4000/api/auths/signup") else {return}
+        
+        let body: [String: Any] = [
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password": password
+        ]
+        
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        
+        //crate  request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        //send request async way
+        URLSession.shared.dataTask(with: request){
+            data, responce,error in DispatchQueue.main.async{
+                
+                //for nerwork error alert
+                if let error = error{
+                    self.alertTitle = "Error"
+                    self.alertMessage = error.localizedDescription
+                    self.showAlert = true
+                    return
+                    
+                }
+                guard let httpResponce = responce as? HTTPURLResponse else {return}
+                
+                if httpResponce.statusCode == 201 {
+                    self.alertTitle = "Success"
+                    self.alertMessage = "Account created successfully"
+                    // clear text fields
+                    self.name = ""
+                    self.email = ""
+                    self.phone = ""
+                    self.password = ""
+                    self.confirmPassword = ""
+                } else{
+                    self.alertTitle = "Error"
+                    self.alertMessage = "Failed create account. Try again"
+                    
+                }
+                
+                if httpResponce.statusCode == 409 {
+                    self.alertTitle = "Acount Creation Failed"
+                    self.alertMessage = "Email is already registered"
+                }
+                self.showAlert = true
+            }
+        }.resume()
+        
+        
     }
     
 }
