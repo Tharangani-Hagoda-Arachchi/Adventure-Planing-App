@@ -54,10 +54,21 @@ struct LoginView: View {
                             CustomPrimaryButtonView(title: "Login"){
                                 loginViewModel.validateCreateAccount()
                                 if loginViewModel.isValid{
-                                    print("tap Login")
-                                    //logic with backend
+                                    //call register functin in view model
+                                    loginViewModel.useLogin()
+
                                 }
                             }
+                            .alert(isPresented: $loginViewModel.showAlert) {
+                                Alert(title: Text(loginViewModel.alertTitle),
+                                      message: Text(loginViewModel.alertMessage),
+                                      dismissButton: .default(Text("OK")))
+                            }
+                            //navigate to home
+                            .navigationDestination(isPresented: $loginViewModel.isLogin){
+                                HomeView()
+                            }
+                            
                             .padding(.top, 20)
                             .padding(.bottom, 10)
                             
