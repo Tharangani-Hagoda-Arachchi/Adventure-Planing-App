@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GuideCardView: View {
     var body: some View {
-
+        
         }
 
 
