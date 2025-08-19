@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct TabButtonView: View {
+    let systemImage: String
+    let title: String
+    let isSelect: Bool
+    let action: () -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            Image(systemName: systemImage)
+                .font(Font.primaryRegularText)
+                .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+        }
+
+        .padding(.vertical,10)
+        .frame(maxWidth: .infinity)
+        //.background(isSelect ? Color.AppSecondary.opacity(0.5) : Color.clear)
+        .onTapGesture {
+            action()
+        }
+        
     }
 }
 
-#Preview {
-    TabButtonView()
-}

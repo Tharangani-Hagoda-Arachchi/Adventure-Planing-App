@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Color{
-    static let AppPrimary = Color(hex:"412A04")
+    static let AppPrimary = Color(hex:"654209")
     static let AppSecondary = Color(hex:"F5A623")
     static let AppButtonText = Color(hex:"FFFFFF")
     static let AppPrimaryTextField = Color(hex:"000000")
