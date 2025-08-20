@@ -6,3 +6,86 @@
 //
 
 import Foundation
+import SwiftUI
+
+class GuideViewModel : ObservableObject{
+    
+    @Published var guides: [Guide] = []
+    
+    //alert
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    @Published var alertTitle = ""
+    
+    //load status
+    @Published var isLoad = false
+    
+
+    
+    //backend API call for login
+    func fetchGuide(){
+        //backend url
+        guard let url = URL(string: "http://192.168.190.31:3000/api/guides") else {return}
+
+        
+        //crate  request
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        
+        //send request async way
+        URLSession.shared.dataTask(with: request){
+            data, responce,error in DispatchQueue.main.async{
+                
+                //for nerwork error alert
+                if let error = error{
+                    self.alertTitle = "Error"
+                    self.alertMessage = error.localizedDescription
+                    self.showAlert = true
+                    return
+                    
+                }
+                guard let httpResponce = responce as? HTTPURLResponse else {return}
+
+                
+                
+                if httpResponce.statusCode == 200 {
+                    if let data = data{
+                        //decode JSON Data
+                        do{
+                            let decoded = try JSONDecoder().decode([Guide].self, from: data)
+                            self.guides = decoded
+                            
+                        }
+                        catch{
+                            self.alertTitle = "Decoding Error"
+                            if let jsonStr = String(data: data, encoding: .utf8){
+                                self.alertMessage = "Data could not be read. JSON:\n\(jsonStr)"
+                             } else {
+                                self.alertMessage = error.localizedDescription
+                             }
+                            self.showAlert = true
+                        }
+                    }
+                    
+                }else{
+                    let responseMessage = "Something went wrong"
+                    self.alertTitle = "Error"
+                    self.alertMessage = responseMessage
+                    self.showAlert = true
+                    
+                }
+
+                
+            }
+        }.resume()
+    }
+        
+    
+}
+
+
+
+
+
+

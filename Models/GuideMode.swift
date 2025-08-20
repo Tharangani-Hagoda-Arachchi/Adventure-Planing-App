@@ -7,16 +7,20 @@
 
 import Foundation
 
-struct Guide: Codable, Identifiable{
-    let id: String
+struct Guide: Codable{
+    let _id: String
     let guideRegno: String
     let guideName: String
     let guideFee: Double
     let guideAdventureCategory: String
+    let guideAdventurePlace: String
     let guideCategory: String
     let language: String
-    let ratings: Int
-    let guideImageUrl: String
+    let ratings: Double
+    let guideImage: String
+    
+
+    
 
 
 }

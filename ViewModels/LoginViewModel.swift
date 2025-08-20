@@ -54,7 +54,7 @@ class LoginViewModel : ObservableObject{
     //backend API call for login
     func useLogin(){
         //backend url
-        guard let url = URL(string: "http://localhost:4000/api/auths/signin") else {return}
+        guard let url = URL(string: "http://localhost:3000/api/auths/signin") else {return}
         
         let body: [String: Any] = [
             

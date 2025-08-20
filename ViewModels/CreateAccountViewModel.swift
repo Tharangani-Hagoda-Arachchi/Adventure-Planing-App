@@ -97,7 +97,7 @@ class CreateAccountViewModel : ObservableObject{
     //backend API call for registration
     func useRegistration(){
         //backend url
-        guard let url = URL(string: "http://localhost:4000/api/auths/signup") else {return}
+        guard let url = URL(string: "http://localhost:3000/api/auths/signup") else {return}
         
         let body: [String: Any] = [
             "name": name,
