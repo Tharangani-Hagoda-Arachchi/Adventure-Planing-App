@@ -12,17 +12,25 @@ struct TopNavigationView: View {
     @State private var navigateFavourite = false
     @State private var navigateProfile = false
     
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
-        NavigationStack{
             
             HStack(spacing:12){
-                
+                Button(action: {
+                    dismiss()  // default back
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(Color.AppPrimaryTextField)
+                }
+                Spacer()
                 //notification
                 NavigationLink(destination: NotificationView()){
                     Image(systemName: "bell.fill")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
-                        .padding()
+                        .padding(10)
                         .background(Circle().fill(Color.white))
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
                           .shadow(radius: 4)
@@ -33,7 +41,7 @@ struct TopNavigationView: View {
                     Image(systemName: "heart.fill")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
-                        .padding()
+                        .padding(10)
                         .background(Circle().fill(Color.white))
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
                           .shadow(radius: 4)
@@ -44,7 +52,7 @@ struct TopNavigationView: View {
                     Image(systemName: "person.fill")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
-                        .padding()
+                        .padding(10)
                         .background(Circle().fill(Color.white))
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
                           .shadow(radius: 4)
@@ -54,37 +62,30 @@ struct TopNavigationView: View {
                 
 
             }
-            
             .padding(.horizontal,16)
-            .padding(.top, 10)
+            .padding(.vertical, 5)
             //make top right corner
             .frame(maxWidth: .infinity, alignment: .trailing)
-             Spacer()
+            
             
         }
         
         //navigate to notification view
-        .navigationDestination(isPresented: $navigateNotification){
-            NotificationView()
-        }
-        
-        //navigate to Favourite view
-        .navigationDestination(isPresented: $navigateFavourite){
-            FavouriteView()
-        }
-        
-        //navigate to profile view
-        .navigationDestination(isPresented: $navigateProfile){
-            ProfileView()
-        }
 
+    
 
         
 
-    }
+    
         
 }
 
 #Preview {
-    TopNavigationView()
+    VStack{
+        TopNavigationView()
+        Spacer()
+       
+        
+    }
+
 }

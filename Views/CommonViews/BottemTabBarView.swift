@@ -31,7 +31,7 @@ struct BottemTabBarView: View {
                 case .none: EmptyView()
                 }
         }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: 10)
             
             HStack(spacing: 12){
                 
@@ -53,7 +53,6 @@ struct BottemTabBarView: View {
                         selectedTab = .packages
                     }
                     
-     
                 }
                 .padding(.horizontal, 16)
                 .background(Color.AppButtonText.ignoresSafeArea(edges: .bottom))
@@ -75,15 +74,18 @@ struct BottemTabBarView: View {
                         
                 }
                 
+            }.padding(.horizontal,16)
+             .padding(.bottom,5)
+                
             }
-            .padding(.horizontal,16)
-            .padding(.bottom,40)
+            
+
+            
+       
             
         }
-        .ignoresSafeArea(edges: .bottom)
-
         
-    }
+    
 }
 
 

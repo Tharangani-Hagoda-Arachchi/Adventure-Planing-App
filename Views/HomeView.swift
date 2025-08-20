@@ -8,8 +8,24 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var selectedTab : Tab = .none
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack{
+            VStack{
+                TopNavigationView()
+                Spacer()
+                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                
+                BottemTabBarView(selectedTab: $selectedTab)
+                    .edgesIgnoringSafeArea(.bottom)
+            
+            }
+            .navigationBarHidden(true)
+        }
+
+        
     }
 }
 
