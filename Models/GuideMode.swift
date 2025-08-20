@@ -17,6 +17,10 @@ struct Guide: Codable{
     let guideCategory: String
     let language: String
     let ratings: Double
+    let guidePhoneNo: String
+    let guideEmail: String
+    let guideAddress: String
+    let guideValidity: String
     let guideImage: String
     
 
