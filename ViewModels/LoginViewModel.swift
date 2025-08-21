@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import LocalAuthentication
 
 class LoginViewModel : ObservableObject{
     
@@ -32,7 +33,7 @@ class LoginViewModel : ObservableObject{
 
     
     // validation check function
-    func validateCreateAccount(){
+    func validateLoginAccount(){
         
         //assign errors to nill
         errorEmail = nil
@@ -110,6 +111,39 @@ class LoginViewModel : ObservableObject{
                 
             }
         }.resume()
+    }
+    
+    //get save email function
+    private func getSavedEmail() -> String?{
+            UserDefaults.standard.string(forKey: "LastRegisteredEmail")
+    }
+    
+    //Auto face ID loging logic
+    func autoFaceIDLogin(){
+        let context = LAContext()
+        var error : NSError?
+        
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error),
+              let savedEmail = getSavedEmail()
+        else {return}
+        
+        BiometricAuthHelper.shared.authenticateWithFaceID{success, authError in
+            if success{
+                if let data = KeyChainHelper.shared.read(service: "AdventureAPP", account: savedEmail),
+                   let savedPassword = String(data: data, encoding: .utf8){
+                    DispatchQueue.main.async{
+                        self.email = savedEmail
+                        self.password = savedPassword
+                        self.useLogin()
+                        
+                        
+                    }
+                }else{
+                    print("FaceId login fail")
+                }
+                
+            }
+        }
     }
         
     

@@ -131,23 +131,52 @@ class CreateAccountViewModel : ObservableObject{
                 if httpResponce.statusCode == 201 {
                     self.alertTitle = "Success"
                     self.alertMessage = "Account created successfully"
+                    
+                    // save credential to key chain to faceId login
+                    if let passwordData = self.password.data(using: .utf8){
+                        KeyChainHelper.shared.save(service: "AdventureAPP", account: self.email, data: passwordData)
+                    }
+                    
+                    // Save email to UserDefaults for Face ID auto-login
+                    UserDefaults.standard.set(self.email, forKey: "LastRegisteredEmail")
+                    
+                    
                     // clear text fields
                     self.name = ""
                     self.email = ""
                     self.phone = ""
                     self.password = ""
                     self.confirmPassword = ""
+                    
+                    // ask permision for fce ID
+                    
+                    BiometricAuthHelper.shared.authenticateWithFaceID{success, _ in
+                        if success{
+                            print("face id setup compete")
+                        }else{
+                            print("face id decline")
+                        }
+                    }
+
+                              
+                          
+                    self.showAlert = true
+
+                    
+
                 } else{
                     self.alertTitle = "Error"
                     self.alertMessage = "Failed create account. Try again"
+                    self.showAlert = true
                     
                 }
                 
                 if httpResponce.statusCode == 409 {
                     self.alertTitle = "Acount Creation Failed"
                     self.alertMessage = "Email is already registered"
+                    self.showAlert = true
                 }
-                self.showAlert = true
+                
             }
         }.resume()
         

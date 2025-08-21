@@ -14,6 +14,7 @@ struct LoginView: View {
         NavigationStack{
             ZStack(alignment: .bottom){
                 
+                
                 // backgroun image section
                 Rectangle()
                     .fill(ImagePaint(image: Image("Login Background"), scale: 0.65))
@@ -52,7 +53,7 @@ struct LoginView: View {
                         //login button
                         VStack{
                             CustomPrimaryButtonView(title: "Login"){
-                                loginViewModel.validateCreateAccount()
+                                loginViewModel.validateLoginAccount()
                                 if loginViewModel.isValid{
                                     //call register functin in view model
                                     loginViewModel.useLogin()
@@ -70,7 +71,7 @@ struct LoginView: View {
                             }
                             
                             .padding(.top, 20)
-                            .padding(.bottom, 10)
+
                             
                             NavigationLink(destination: PasswodRecoveryIView()){
                                 Text("Forget Password?")
@@ -107,6 +108,10 @@ struct LoginView: View {
             
         }
         .navigationBarHidden(true)
+        // call auto face login function when appear
+        .onAppear{
+            loginViewModel.autoFaceIDLogin()
+        }
             
         }
         
