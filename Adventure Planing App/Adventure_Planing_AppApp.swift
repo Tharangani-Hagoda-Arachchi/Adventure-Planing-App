@@ -11,7 +11,7 @@ import SwiftUI
 struct Adventure_Planing_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            LoadingView()
+            MapView()
         }
     }
 }

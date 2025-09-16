@@ -9,14 +9,35 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var selectedTab : Tab = .none
+    @StateObject private var adventureModel = AdventureViewModel()
     var body: some View {
         NavigationStack{
             VStack{
                 TopNavigationView()
-                Spacer()
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                
+                Text("Hello Jone")
+                    .font(Font.buttonLargeText)
+                    .foregroundColor(Color.AppPrimaryTextField)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal,20)
+                Text("Welcome to Travel Mate")
+                    .font(Font.SubTitleSmallText)
+                    .foregroundColor(Color.AppPrimaryTextField)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal,20)
+                
+                //AdventureCategoryRaw(adventureViewModel: adventureModel)
+                
+
+
+                    
+                    
+                    
+                }.padding(.horizontal)
+                .onAppear{
+                    adventureModel.fetchAdventure()
+                }
+
                 
                 BottemTabBarView(selectedTab: $selectedTab)
                     .edgesIgnoringSafeArea(.bottom)
@@ -26,7 +47,7 @@ struct HomeView: View {
         }
 
         
-    }
+    
 }
 
 #Preview {

@@ -8,11 +8,25 @@
 import SwiftUI
 
 struct AdventureCategoryRaw: View {
+    @ObservedObject var adventureViewModel: AdventureViewModel
+    var onCategorySelected: (String) -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+        
+        ScrollView(.horizontal, showsIndicators: false){
+            HStack(spacing: 10){
 
-#Preview {
-    AdventureCategoryRaw()
+                ForEach(adventureViewModel.adventures) { adventure in
+                    SmallButtonView(title: adventure.adventureType){
+                        adventureViewModel.selectAdventure(adventure)
+                        onCategorySelected(adventure.id)
+                        
+                      
+                    }
+                    
+                }
+            }
+            
+        }
+    }
 }

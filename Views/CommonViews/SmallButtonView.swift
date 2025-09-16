@@ -7,12 +7,27 @@
 
 import SwiftUI
 
+
 struct SmallButtonView: View {
+    var title: String
+
+    var action: () -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(action: action){
+            Text(title.capitalized)
+                .font(Font.primarysBoldText)
+                .foregroundColor(Color.AppPrimaryTextField)
+                .frame(maxWidth:200)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background((Color.AppPrimaryTextField.opacity(0.1)))
+                .cornerRadius(15)
+                .shadow(radius: 4)
+            
+        }
+        
     }
 }
 
-#Preview {
-    SmallButtonView()
-}
+
