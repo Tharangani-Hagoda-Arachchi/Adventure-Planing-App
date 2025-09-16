@@ -19,5 +19,6 @@ extension Font{
     static let cardSubTitleText = Font.system(size: 14, weight: .semibold, design: .default)
     static let cardSubTitleSmallText = Font.system(size: 14, weight: .regular, design: .default)
     static let cardText = Font.system(size: 13, weight: .regular, design: .default)
+    static let cardSmallText = Font.system(size: 11, weight: .regular, design: .default)
 }
 

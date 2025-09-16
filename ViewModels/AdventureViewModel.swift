@@ -15,8 +15,6 @@ class AdventureViewModel : ObservableObject{
     @Published var selectedItem: Adventure? = nil
     
     
-    
-    
     //backend API call for fetch adventures
     func fetchAdventure(){
         //backend url
@@ -42,8 +40,6 @@ class AdventureViewModel : ObservableObject{
                 }
                 
             }
-            
-            
             
         }.resume()
     }

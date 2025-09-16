@@ -19,39 +19,13 @@ enum Tab: Equatable{
 struct BottemTabBarView: View {
    
     @Binding var selectedTab: Tab
-    @State private var homePath = NavigationPath()
-    @State private var mapPath = NavigationPath()
-    @State private var eventPath = NavigationPath()
-    @State private var packagePath = NavigationPath()
+    //@State private var homePath = NavigationPath()
+   // @State private var mapPath = NavigationPath()
+   // @State private var eventPath = NavigationPath()
+   // @State private var packagePath = NavigationPath()
     
     var body: some View {
-        VStack(spacing: 0){
-
-                
-                ZStack(alignment: .bottom){
-                    switch selectedTab {
-                    case .home: NavigationStack(path: $homePath) {
-                        HomeView()
-                    }
-                    case .map: NavigationStack(path: $mapPath) {
-                        MapView()
-                    }
-                    case .event :NavigationStack(path: $eventPath) {
-                        EventView()
-                    }
-                    case .packages: NavigationStack(path: $packagePath) {
-                        PackageView()
-                    }
-                    case .none: EmptyView()
-                    }
-                
-            }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-        }
-            
-
-            
+ 
             HStack(spacing: 12){
                 
                 //custom tab bar icons

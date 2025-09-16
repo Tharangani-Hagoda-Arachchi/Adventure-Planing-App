@@ -11,6 +11,7 @@ struct TopNavigationView: View {
     @State private var navigateNotification = false
     @State private var navigateFavourite = false
     @State private var navigateProfile = false
+    @State private var selectedTab: Tab = .none
     
     @Environment(\.dismiss) private var dismiss
     
@@ -57,7 +58,8 @@ struct TopNavigationView: View {
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
                           .shadow(radius: 4)
                 }
-
+                
+                
 
                 
 

@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var selectedTab : Tab = .none
+    @State private var selectedTab : Tab = .home
     @StateObject private var adventureModel = AdventureViewModel()
+    
+    @State private var selectedCategoryId: String? = nil
+    @State private var showPlaces = false
+    
     var body: some View {
         NavigationStack{
-            VStack{
+            VStack(spacing: 0){
+                
+                //top navigation view
                 TopNavigationView()
                 
                 Text("Hello Jone")
@@ -26,27 +32,27 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal,20)
                 
-                //AdventureCategoryRaw(adventureViewModel: adventureModel)
-                
-
-
-                    
-                    
-                    
-                }.padding(.horizontal)
-                .onAppear{
-                    adventureModel.fetchAdventure()
+                // display adventure categories
+                AdventureCategoryRaw(adventureViewModel: adventureModel) { categoryId in
+                    selectedCategoryId = categoryId
+                    showPlaces = true
                 }
-
-                
-                BottemTabBarView(selectedTab: $selectedTab)
-                    .edgesIgnoringSafeArea(.bottom)
-            
+                    
+            }.padding(.horizontal)
+            .onAppear{
+                adventureModel.fetchAdventure()
+            }
+            //navigate adventure view with selected category
+            .navigationDestination(isPresented: $showPlaces) {
+                if let categoryId = selectedCategoryId {
+                    AdventureView(categoryId: categoryId)
+                }
             }
             .navigationBarHidden(true)
+            
+            }
+            
         }
-
-        
     
 }
 

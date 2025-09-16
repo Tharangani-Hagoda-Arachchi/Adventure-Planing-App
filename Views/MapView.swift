@@ -26,38 +26,47 @@ struct MapView: View {
     
     var body: some View {
         
-        ZStack(alignment: .top){
+        VStack{
             
-            Map(coordinateRegion: $mapRegion, annotationItems: adventurePlaceModel.places) { place in
-                MapMarker(coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude),
-                          tint: .red)
-            }
-            .ignoresSafeArea()
-            
-            AdventureCategoryRaw(adventureViewModel: adventureModel) { categoryId in
-                            adventurePlaceModel.fetchPlacesByCategory(for: categoryId) { places in
-                                if let first = places.first {
-                                    mapRegion.center = CLLocationCoordinate2D(latitude: first.latitude,
-                                                                              longitude: first.longitude)
+            ZStack(alignment: .top){
+                
+                
+                
+                
+                Map(coordinateRegion: $mapRegion, annotationItems: adventurePlaceModel.places) { place in
+                    MapMarker(coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude),
+                              tint: .red)
+                }
+                .ignoresSafeArea()
+                
+                AdventureCategoryRaw(adventureViewModel: adventureModel) { categoryId in
+                                adventurePlaceModel.fetchPlacesByCategory(for: categoryId) { places in
+                                    if let first = places.first {
+                                        mapRegion.center = CLLocationCoordinate2D(latitude: first.latitude,longitude: first.longitude)
+                                    }
                                 }
                             }
-                        }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 12)
-                .background( Capsule().fill(Color.white).overlay(Capsule().stroke(Color.white, lineWidth: 1)))
-                .foregroundColor(.white)
-                .padding(.horizontal, 20)
-            
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 12)
+                    .background( Capsule().fill(Color.white).overlay(Capsule().stroke(Color.white, lineWidth: 1)))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 20)
+                
 
+                
+            }
             
         }
+        
+        
+
         .onAppear{
             adventureModel.fetchAdventure()
         }
         
-        
-        BottemTabBarView(selectedTab: $selectedTab)
-            .edgesIgnoringSafeArea(.bottom)
+
+
+
                 
             
         

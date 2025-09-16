@@ -14,20 +14,24 @@ struct TabButtonView: View {
     let action: () -> Void
     
     var body: some View {
-        VStack{
-            Image(systemName: systemImage)
-                .font(Font.primaryRegularText)
-                .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
-            Text(title)
-                .font(.caption)
-                .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
-        }
+        Button(action: action){
+            VStack{
+                Image(systemName: systemImage)
+                    .font(Font.primaryRegularText)
+                    .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+            }
 
-        .padding(.vertical,10)
-        .frame(maxWidth: .infinity)
-        //.background(isSelect ? Color.AppSecondary.opacity(0.5) : Color.clear)
-        .onTapGesture {
-            action()
+            .padding(.vertical,10)
+            .frame(maxWidth: .infinity)
+            //.background(isSelect ? Color.AppSecondary.opacity(0.5) : Color.clear)
+            //.onTapGesture {
+               // action()
+            //}
+            
+            
         }
         
     }

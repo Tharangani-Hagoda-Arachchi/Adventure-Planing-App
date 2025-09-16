@@ -87,14 +87,21 @@ class LoginViewModel : ObservableObject{
                 
                 //get responce message as string
                 var responseMessage = "Something went wrong"
+                var token: String?
+                
                 if let data = data,
                    let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     if let message = json["message"] as? String {
-                        responseMessage = message
+                        responseMessage = json["message"] as? String ?? responseMessage
+                        token = json["token"] as? String
                     }
                 }
                 
-                if httpResponce.statusCode == 200 {
+                if httpResponce.statusCode == 200, let token = token {
+                    // save token
+                    KeyChainHelper.shared.save(service: "AdventureAPP", account: "userToken", data: Data(token.utf8))
+                    // Save email for Face ID
+                    UserDefaults.standard.set(self.email, forKey: "LastRegisteredEmail")
                     
                     // clear text fields
                     self.email = ""
