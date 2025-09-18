@@ -26,7 +26,10 @@ class GuideViewModel : ObservableObject{
     //backend API call for fetch guide by place
     func fetchGuide(for placeName: String,completion: @escaping ([Guide]) -> Void = { _ in }){
         //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/guides/\(placeName)") else {return}
+        guard let encodedPlace = placeName.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let url = URL(string: "http://13.60.76.232/api/guides/\(encodedPlace)") else {
+            return
+        }
 
         
         //crate  request
@@ -56,7 +59,7 @@ class GuideViewModel : ObservableObject{
                         do{
                             let decoded = try JSONDecoder().decode([Guide].self, from: data)
                             self.guides = decoded
-                            
+                           
                         }
                         catch{
                             self.alertTitle = "Decoding Error"
@@ -82,21 +85,19 @@ class GuideViewModel : ObservableObject{
         }.resume()
     }
     
-    //backend API call for fetch guide by id
-    func fetchGuideById(for id: String,completion: @escaping (Guide?) -> Void = { _ in }){
-
+    // fetch guide by id
+    func fetchGuideByID(for id: String, completion: @escaping (Guide?) -> Void = { _ in }){
         //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/guides/\(id)") else {return}
-
+        guard let url = URL(string: "http://13.60.76.232/api/guides/details/\(id)") else {return}
+        
+        isLoad = true
         
         //crate  request
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-
         
         //send request async way
         URLSession.shared.dataTask(with: request){
-            
             data, responce,error in DispatchQueue.main.async{
                 
                 //for nerwork error alert
@@ -109,22 +110,25 @@ class GuideViewModel : ObservableObject{
                 }
                 
                 guard let httpResponce = responce as? HTTPURLResponse else {return}
-
+                
                 if httpResponce.statusCode == 200 {
+                    
                     if let data = data{
+                        
                         //decode JSON Data
                         do{
                             let decoded = try JSONDecoder().decode(Guide.self, from: data)
                             self.guideDetail = decoded
+                            completion(decoded)
                             
-                        }
-                        catch{
+                            
+                        } catch{
                             self.alertTitle = "Decoding Error"
                             if let jsonStr = String(data: data, encoding: .utf8){
                                 self.alertMessage = "Data could not be read. JSON:\n\(jsonStr)"
-                             } else {
+                            } else {
                                 self.alertMessage = error.localizedDescription
-                             }
+                            }
                             self.showAlert = true
                         }
                     }
@@ -136,11 +140,10 @@ class GuideViewModel : ObservableObject{
                     self.showAlert = true
                     
                 }
-
-                
             }
         }.resume()
     }
+
 
         
     

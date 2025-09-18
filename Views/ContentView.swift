@@ -16,6 +16,7 @@ struct ContentView: View {
         Group{
             if isLogin{
                 MainTabView()
+                
             }else{
                 LoadingView()
                 

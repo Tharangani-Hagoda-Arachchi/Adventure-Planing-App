@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct GuideCardView: View {
+    @StateObject private var guideModel = GuideViewModel()
     let guide :Guide
+    
+    @State private var selectedGuideId: String? = nil
+    
+    @State private var navigateToDetail = false
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             HStack(alignment:.top, spacing: 12){
@@ -71,21 +77,32 @@ struct GuideCardView: View {
                 Spacer()
                     
             }
-
-                
-                Button(action: {
-                    // Hire action
-                }) {
-                    Text("Hire")
-                        .font(Font.cardTitleText)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 6)
-                        .background(Color.AppPrimary)
-                        .foregroundColor(Color.AppButtonText)
-                        .clipShape(Capsule())
+            Button(action: {
+                guideModel.fetchGuideByID(for: guide.id)
+                navigateToDetail = true
+            }) {
+                    
+                Text("Hire")
+                    
+                    .font(Font.cardTitleText)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 6)
+                    .background(Color.AppPrimary)
+                    .foregroundColor(Color.AppButtonText)
+                    .clipShape(Capsule())
                 }
-               
-                .padding(.bottom, 12)
+                
+                NavigationLink(
+                    destination: GuideDetailView(guide: guide),
+                    isActive: $navigateToDetail,
+                    label: { EmptyView() }
+                )
+                .hidden()
+                        
+                
+            
+            .padding(.bottom, 12)
+
                 
             }
             .padding()
@@ -94,13 +111,9 @@ struct GuideCardView: View {
             .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 2)
             .padding(.horizontal)
 
-
-
-
-                
-
         
         }
+    
 
 
 }

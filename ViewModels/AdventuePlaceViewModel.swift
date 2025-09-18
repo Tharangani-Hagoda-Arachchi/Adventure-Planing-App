@@ -81,7 +81,7 @@ class AdventuePlaceViewModel : ObservableObject{
     // fetch places by id
     func fetchPlacesByID(for id: String, completion: @escaping (AdventurePlace?) -> Void = { _ in }){
         //backend url
-         guard let url = URL(string: "http://13.60.76.232/api/places/details/\(id)") else {return}
+        guard let url = URL(string: "http://13.60.76.232/api/places/details/\(id)") else {return}
         
         isLoad = true
         

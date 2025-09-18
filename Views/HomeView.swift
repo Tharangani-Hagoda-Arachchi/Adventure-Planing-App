@@ -51,7 +51,7 @@ struct HomeView: View {
                     AdventureView(categoryId: categoryId)
                 }
             }
-            //.navigationBarHidden(true)
+            .navigationBarHidden(true)
             
             }
             

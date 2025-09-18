@@ -23,6 +23,8 @@ struct Guide: Identifiable, Codable{
     let guideValidity: String
     let guideImage: String
     
+    
+    
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case guideRegno
@@ -41,6 +43,7 @@ struct Guide: Identifiable, Codable{
 
         
         }
+    
     
 
     
