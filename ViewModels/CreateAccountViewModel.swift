@@ -128,17 +128,35 @@ class CreateAccountViewModel : ObservableObject{
                 }
                 guard let httpResponce = responce as? HTTPURLResponse else {return}
                 
-                if httpResponce.statusCode == 201 {
-                    self.alertTitle = "Success"
-                    self.alertMessage = "Account created successfully"
+                var responseMessage = "Something went wrong"
+                var accessToken: String?
+                
+                if let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    responseMessage = json["message"] as? String ?? responseMessage
+                    accessToken = json["accessToken"] as? String
+                }
+                
+                if httpResponce.statusCode == 201, let accessToken {
+                    
+                    //save token
+                    TokenManager.shared.saveAccessToken(accessToken)
                     
                     // save credential to key chain to faceId login
                     if let passwordData = self.password.data(using: .utf8){
                         KeyChainHelper.shared.save(service: "AdventureAPP", account: self.email, data: passwordData)
                     }
                     
+                    
                     // Save email to UserDefaults for Face ID auto-login
                     UserDefaults.standard.set(self.email, forKey: "LastRegisteredEmail")
+                    UserDefaults.standard.set(true, forKey: "isLoggedIn")
+                    
+                    
+                    self.alertTitle = "Success"
+                    self.alertMessage = "Account created successfully"
+                    
+
                     
                     
                     // clear text fields

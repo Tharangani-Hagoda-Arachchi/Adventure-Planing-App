@@ -9,7 +9,32 @@ import SwiftUI
 
 struct ContatDetailView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack{
+            VStack(){
+                
+                //top navigation view
+                TopNavigationView()
+                
+                Text("Contact Details")
+                    .font(Font.buttonLargeText)
+                    .foregroundColor(Color.AppPrimaryTextField)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal,20)
+                Text("Step 1")
+                    .font(Font.SubTitleSmallText)
+                    .foregroundColor(Color.AppPrimaryTextField)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal,20)
+                
+                VStack(spacing: 12,){
+                    
+                }
+                
+            }
+        }
+        
+        
+        
     }
 }
 

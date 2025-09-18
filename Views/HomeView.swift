@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var selectedTab : Tab = .home
+
     @StateObject private var adventureModel = AdventureViewModel()
     
     @State private var selectedCategoryId: String? = nil
     @State private var showPlaces = false
     
+    
+    
     var body: some View {
-        NavigationStack{
+       
             VStack(spacing: 0){
                 
                 //top navigation view
@@ -26,6 +28,7 @@ struct HomeView: View {
                     .foregroundColor(Color.AppPrimaryTextField)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal,20)
+                
                 Text("Welcome to Travel Mate")
                     .font(Font.SubTitleSmallText)
                     .foregroundColor(Color.AppPrimaryTextField)
@@ -48,14 +51,17 @@ struct HomeView: View {
                     AdventureView(categoryId: categoryId)
                 }
             }
-            .navigationBarHidden(true)
+            //.navigationBarHidden(true)
             
             }
             
-        }
+        
     
 }
 
 #Preview {
-    HomeView()
+    NavigationStack{
+        HomeView()
+    }
+    
 }

@@ -53,14 +53,18 @@ class LoginViewModel : ObservableObject{
     }
     
     //backend API call for login
-    func useLogin(){
+    func useLogin(email: String? = nil, password: String? = nil){
+        
+        let loginEmail = email ?? self.email
+        let loginPassword = password ?? self.password
+        
         //backend url
         guard let url = URL(string: "http://13.60.76.232/api/auths/signin") else {return}
         
         let body: [String: Any] = [
             
-            "email": email,
-            "password": password
+            "email": loginEmail,
+            "password": loginPassword
         ]
         
         let jsonData = try? JSONSerialization.data(withJSONObject: body)
@@ -87,21 +91,25 @@ class LoginViewModel : ObservableObject{
                 
                 //get responce message as string
                 var responseMessage = "Something went wrong"
-                var token: String?
+                var accessToken: String?
                 
                 if let data = data,
                    let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    if let message = json["message"] as? String {
-                        responseMessage = json["message"] as? String ?? responseMessage
-                        token = json["token"] as? String
+                    responseMessage = json["message"] as? String ?? responseMessage
+                    
+                    if let success = json["success"] as? Bool, success,
+                       let token = json["accessToken"] as? String {
+                        accessToken = token
                     }
+                    
                 }
                 
-                if httpResponce.statusCode == 200, let token = token {
+                if let accessToken = accessToken {
                     // save token
-                    KeyChainHelper.shared.save(service: "AdventureAPP", account: "userToken", data: Data(token.utf8))
+                    TokenManager.shared.saveAccessToken(accessToken)
+
                     // Save email for Face ID
-                    UserDefaults.standard.set(self.email, forKey: "LastRegisteredEmail")
+                    UserDefaults.standard.set(loginEmail, forKey: "LastRegisteredEmail")
                     
                     // clear text fields
                     self.email = ""
@@ -122,7 +130,7 @@ class LoginViewModel : ObservableObject{
     
     //get save email function
     private func getSavedEmail() -> String?{
-            UserDefaults.standard.string(forKey: "LastRegisteredEmail")
+        UserDefaults.standard.string(forKey: "LastRegisteredEmail")
     }
     
     //Auto face ID loging logic
@@ -132,23 +140,25 @@ class LoginViewModel : ObservableObject{
         
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error),
               let savedEmail = getSavedEmail()
-        else {return}
+        else {
+            print("Face ID unavailable or no saved email")
+            return
+        }
         
         BiometricAuthHelper.shared.authenticateWithFaceID{success, authError in
             if success{
                 if let data = KeyChainHelper.shared.read(service: "AdventureAPP", account: savedEmail),
                    let savedPassword = String(data: data, encoding: .utf8){
                     DispatchQueue.main.async{
-                        self.email = savedEmail
-                        self.password = savedPassword
-                        self.useLogin()
-                        
+                        self.useLogin(email: savedEmail,password: savedPassword)
                         
                     }
                 }else{
-                    print("FaceId login fail")
+                    print("FaceId login fail no saved password")
                 }
                 
+            } else if let authError = authError {
+                print("Face ID authentication failed:", authError.localizedDescription)
             }
         }
     }

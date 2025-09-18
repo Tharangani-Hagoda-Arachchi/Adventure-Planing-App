@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct Adventure_Planing_AppApp: App {
+    
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+
+          ContentView()
+           
         }
     }
 }

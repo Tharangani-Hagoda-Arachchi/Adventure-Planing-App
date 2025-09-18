@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct AdventureView: View {
-    
+    @State private var selectedTab: Tab = .home
     let categoryId: String
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
     
     private let columns  = [GridItem(.flexible()), GridItem(.flexible())]
     var body: some View {
-        NavigationStack{
+
             VStack{
                 //top navigation
                 TopNavigationView()
@@ -34,7 +34,7 @@ struct AdventureView: View {
                                 .padding(.horizontal)
                             
                         }
-                        .buttonStyle(PlainButtonStyle()) // r
+                        .buttonStyle(PlainButtonStyle()) // 
 
                     }
                 }
@@ -45,8 +45,10 @@ struct AdventureView: View {
                 adventurePlaceModel.fetchPlacesByCategory(for: categoryId)
             }
             .navigationBarHidden(true)
+        BottemTabBarView(selectedTab: $selectedTab)
+                        .edgesIgnoringSafeArea(.bottom)
             
-        }
+        
         
     }
 }

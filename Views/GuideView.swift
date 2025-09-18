@@ -41,24 +41,7 @@ var body: some View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else{
-                        //scroll area
-                        ScrollView(showsIndicators: false) {
-                            LazyVStack(spacing: 16) {
-                                ForEach(guideModel.guides, id: \._id) { guide in
-                                    GuideCardView(guide:guide)
-                                        .padding(.horizontal)
-                                    
-                                }
-                                
-                            }
-                            .padding(.top, 10)
-                            .padding(.bottom, 10)
-                            
-                            
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .ignoresSafeArea(edges: [.bottom, .top])
-                        .background(Color.AppButtonText.opacity(0.89))
+                        
                         
                     }
                 }

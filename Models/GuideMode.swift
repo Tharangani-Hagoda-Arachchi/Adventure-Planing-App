@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Guide: Codable{
-    let _id: String
+struct Guide: Identifiable, Codable{
+    let id: String
     let guideRegno: String
     let guideName: String
     let guideFee: Double
@@ -22,6 +22,25 @@ struct Guide: Codable{
     let guideAddress: String
     let guideValidity: String
     let guideImage: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case guideRegno
+        case guideName
+        case guideFee
+        case guideAdventureCategory
+        case guideAdventurePlace
+        case guideCategory
+        case language
+        case ratings
+        case guidePhoneNo
+        case guideEmail
+        case guideAddress
+        case guideValidity
+        case guideImage
+
+        
+        }
     
 
     

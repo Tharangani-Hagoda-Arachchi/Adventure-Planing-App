@@ -8,8 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @AppStorage("isLogin") private var isLogin: Bool = false
+    @StateObject private var loginVM = LoginViewModel()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Group{
+            if isLogin{
+                MainTabView()
+            }else{
+                LoadingView()
+                
+            }
+            
+        }
+
     }
 }
 

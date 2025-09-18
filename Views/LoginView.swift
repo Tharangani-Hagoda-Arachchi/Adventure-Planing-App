@@ -66,9 +66,12 @@ struct LoginView: View {
                                       dismissButton: .default(Text("OK")))
                             }
                             //navigate to home
-                            .navigationDestination(isPresented: $loginViewModel.isLogin){
-                                HomeView()
-                            }
+                            .background(
+                                NavigationLink(destination: MainTabView(), isActive:$loginViewModel.isLogin){
+                                    EmptyView()
+                                }
+                            )
+
                             
                             .padding(.top, 20)
 
