@@ -28,9 +28,14 @@ struct AdventureView: View {
             ScrollView{
                 LazyVStack(spacing: 16){
                     ForEach(adventurePlaceModel.places){ place in
-                        AdventureCadView(adventurePlace: place)
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal)
+                        NavigationLink(destination: AdventureDetailView(placeId: place.id)) {
+                            AdventureCadView(adventurePlace: place)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                            
+                        }
+                        .buttonStyle(PlainButtonStyle()) // r
+
                     }
                 }
                 .padding(.top, 16)

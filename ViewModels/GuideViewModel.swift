@@ -23,9 +23,9 @@ class GuideViewModel : ObservableObject{
 
     
     //backend API call for login
-    func fetchGuide(){
+    func fetchGuide(for placeName: String,completion: @escaping ([Guide]) -> Void = { _ in }){
         //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/guides") else {return}
+        guard let url = URL(string: "http://13.60.76.232/api/guides/\(placeName)") else {return}
 
         
         //crate  request

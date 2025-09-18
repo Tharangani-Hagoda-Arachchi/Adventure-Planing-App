@@ -18,7 +18,7 @@ struct GuideCardView: View {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 80, height: 80)
                         .clipShape(Circle())
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 2))
                         .shadow(radius: 4)
@@ -36,23 +36,17 @@ struct GuideCardView: View {
                         .frame(width: 100, height: 100)
                 }
                 
-                VStack(alignment:.leading, spacing: 6){
+                VStack(alignment:.leading, spacing: 4){
                     HStack{
                         //name
                         Text(guide.guideName)
                             .font(Font.cardTitleText)
                             .foregroundColor(Color.AppPrimaryTextField)
-                        Spacer()
+                       Spacer()
                         
                         //rating
-                        HStack(spacing: 2) {
-                            ForEach(0..<3) { _ in
-                                Image(systemName: "star.fill")
-                                    .resizable()
-                                    .frame(width: 14, height: 14)
-                                    .foregroundColor(.orange)
-                            }
-                        }
+                        RatingStarView(rating: guide.ratings)
+                       
                         
                     }
                     
@@ -61,11 +55,11 @@ struct GuideCardView: View {
                         .font(Font.cardSubTitleSmallText)
                         .foregroundColor(Color.AppPrimaryTextField)
                     
-                    Text("LKR \(String(format: "%.2f", guide.guideFee))")
+                    Text("USD \(String(format: "%.2f", guide.guideFee))")
                         .font(Font.cardSubTitleText)
                         .foregroundColor(.brown)
                     
-                    Text("ategory: \(guide.guideCategory)")
+                    Text("Category: \(guide.guideCategory)")
                         .font(Font.cardSubTitleSmallText)
                         .foregroundColor(Color.AppPrimaryTextField)
                     

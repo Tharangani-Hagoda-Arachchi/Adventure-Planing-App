@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct IconCircleButtonView: View {
+    let systemImage: String
+    let backgroundColor: Color
+    let action: () -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(action: action){
+            Image(systemName: systemImage)
+                .font(Font.primarysBoldText)
+                .foregroundColor(Color.AppPrimaryTextField)
+                .frame(width: 50, height: 50)
+                .background(backgroundColor)
+                .cornerRadius(12)
+                .shadow(radius: 3)
+        }
+
     }
 }
 
-#Preview {
-    IconCircleButtonView()
-}

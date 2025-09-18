@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct RatingStarView: View {
+    let rating: Double
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack(spacing: 2) {
+            ForEach(0..<5, id: \.self) { index in
+                Image(systemName: index < Int(rating) ? "star.fill" : "star")
+                    .foregroundColor(.orange)
+                    .font(.caption)
+            }
+
+        }
     }
 }
 
-#Preview {
-    RatingStarView()
-}
+

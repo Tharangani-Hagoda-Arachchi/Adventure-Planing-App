@@ -11,6 +11,7 @@ import SwiftUI
 class AdventuePlaceViewModel : ObservableObject{
     
     @Published var places: [AdventurePlace] = []
+    @Published var placeDetail: AdventurePlace? = nil// for single responce
     
     //alert
     @Published var showAlert = false
@@ -78,9 +79,9 @@ class AdventuePlaceViewModel : ObservableObject{
     }
     
     // fetch places by id
-    func fetchPlacesByID(for id: String){
+    func fetchPlacesByID(for id: String, completion: @escaping (AdventurePlace?) -> Void = { _ in }){
         //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/places/details\(id)") else {return}
+        guard let url = URL(string: "http://13.60.76.232/api/places/details/\(id)") else {return}
         
         isLoad = true
         
@@ -109,8 +110,9 @@ class AdventuePlaceViewModel : ObservableObject{
                         
                         //decode JSON Data
                         do{
-                            let decoded = try JSONDecoder().decode([AdventurePlace].self, from: data)
-                            self.places = decoded
+                            let decoded = try JSONDecoder().decode(AdventurePlace.self, from: data)
+                            self.placeDetail = decoded
+                            completion(decoded)
                             
                             
                         } catch{
