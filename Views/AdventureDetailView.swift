@@ -10,11 +10,13 @@ import SwiftUI
 struct AdventureDetailView: View {
     let placeId: String
     @Environment(\.dismiss) private var dismiss
+    @State private var isDarkMode = false
     
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
     
     //for guide navigation
     @State private var navigateToGuide = false
+    @State private var navigateToSchedule = false
     
     var body: some View {
         GeometryReader{ geometry in
@@ -29,7 +31,7 @@ struct AdventureDetailView: View {
                                 Image(uiImage: uiImage)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: geometry.size.width - 24, height: geometry.size.height * 0.55)
+                                    .frame(width: geometry.size.width - 24, height: geometry.size.height * 0.45)
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
                                     .shadow(radius: 6)
                                     .padding(.horizontal, 12)
@@ -125,6 +127,7 @@ struct AdventureDetailView: View {
                                 
                                 //add event
                                 Button(action: {
+                                    navigateToSchedule = true
                                     
                                 }){
                                     Text("Shedule")
@@ -134,6 +137,12 @@ struct AdventureDetailView: View {
                                         .background(Color.AppPrimary)
                                         .cornerRadius(12)
                                 }
+                                //navigate to shedule
+                                NavigationLink(
+                                    destination: ScheduleEvenView(adventureName: detail.name),
+                                    isActive: $navigateToSchedule,
+                                    label: { EmptyView() }
+                                )
                             }
                             .padding(.horizontal,16)
                             .padding(.top,10)
@@ -152,6 +161,7 @@ struct AdventureDetailView: View {
             
             .navigationBarHidden(true)
         }
+        
     }
 }
                         

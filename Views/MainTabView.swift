@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab: Tab = .home
+    @StateObject private var viewModel = AdventurePlannerViewModel()
     
     var body: some View {
         VStack(spacing: 0){
@@ -19,7 +20,7 @@ struct MainTabView: View {
                 case .map:
                     MapView()
                 case .event:
-                    EventView()
+                    EventView(viewModel: viewModel)
                 case .packages:
                     PackageView()
                 case .none:

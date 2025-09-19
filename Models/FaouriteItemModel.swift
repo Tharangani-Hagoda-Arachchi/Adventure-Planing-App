@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct FavouriteItemModel: Identifiable{
+    let id: UUID
+    let image: String
+    let title: String
+}

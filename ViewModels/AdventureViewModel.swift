@@ -13,6 +13,8 @@ class AdventureViewModel : ObservableObject{
     
     @Published var adventures: [Adventure] = []
     @Published var selectedItem: Adventure? = nil
+    @Published var selectedAdventureId: Adventure? = nil
+    
     
     
     //backend API call for fetch adventures
@@ -47,6 +49,8 @@ class AdventureViewModel : ObservableObject{
     func selectAdventure(_ adventure: Adventure){
         selectedItem = adventure
     }
+    
+
     
 }
 

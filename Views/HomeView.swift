@@ -40,8 +40,22 @@ struct HomeView: View {
                     selectedCategoryId = categoryId
                     showPlaces = true
                 }
+                
+                Image("sri-lanka-nature-camping")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 180)
+                    .cornerRadius(15)
+                
+                Spacer()
+                
+                
                     
-            }.padding(.horizontal)
+            }.padding()
+
+           
+
+        
             .onAppear{
                 adventureModel.fetchAdventure()
             }

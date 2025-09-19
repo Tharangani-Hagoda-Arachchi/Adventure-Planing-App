@@ -7,12 +7,19 @@
 
 import SwiftUI
 
-struct DarkTheme: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct DarkTheme: ViewModifier {
+    @Binding var isDarkMode: Bool
+    func body(content: Content) -> some View{
+            content
+                .foregroundColor(isDarkMode ? .white : .black)
+                .background(isDarkMode ? Color.black : Color.white)
+                .ignoresSafeArea()
+        
     }
-}
 
-#Preview {
-    DarkTheme()
+}
+extension View {
+    func darkTheme(isDarkMode: Binding<Bool>) -> some View {
+        self.modifier(DarkTheme(isDarkMode: isDarkMode))
+    }
 }

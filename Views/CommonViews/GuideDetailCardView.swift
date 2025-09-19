@@ -31,6 +31,7 @@ struct GuideDetailCardView: View {
             
         }
         .padding(.vertical, 4)
+        
 
         
     }
