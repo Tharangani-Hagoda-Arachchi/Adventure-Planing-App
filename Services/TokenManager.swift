@@ -25,12 +25,22 @@ class TokenManager{
     
     
     func saveAccessToken(_ token: String) {
-            KeyChainHelper.shared.save(service: service, account: accessToken, data: Data(token.utf8))
+        KeyChainHelper.shared.save(service: service, account: accessToken, data: Data(token.utf8))
     }
-
-    func logout() {
-            KeyChainHelper.shared.delete(service: service, account: accessToken)
-            UserDefaults.standard.removeObject(forKey: "LastRegisteredEmail")
+    
+    // session logout not remove face ID
+    func sessionLogout() {
+        KeyChainHelper.shared.delete(service: service, account: accessToken)
+        UserDefaults.standard.removeObject(forKey: "LastRegisteredEmail")
+    }
+      
+    
+    
+    // full logout
+    func logout(savedEmail: String) {
+        sessionLogout()
+            KeyChainHelper.shared.delete(service: service, account: savedEmail)
+           
     }
         
    

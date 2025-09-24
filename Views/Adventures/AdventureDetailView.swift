@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct AdventureDetailView: View {
+    
     let placeId: String
+    
     @Environment(\.dismiss) private var dismiss
+    
     @State private var isDarkMode = false
     
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
+    
+    @AppStorage("isLogin") private var isLogin: Bool = false
     
     //for guide navigation
     @State private var navigateToGuide = false
     @State private var navigateToSchedule = false
     
     var body: some View {
+        
         GeometryReader{ geometry in
             ScrollView(showsIndicators: false){
                 if let detail = adventurePlaceModel.placeDetail{
@@ -38,6 +44,8 @@ struct AdventureDetailView: View {
                                     .padding(.top, 8)
                                 
                             }
+                            
+                            //back button
                             
                             Button(action: {
                                 dismiss()  // default back
@@ -74,7 +82,7 @@ struct AdventureDetailView: View {
                                 Text("Open Hours")
                                     .font(.cardTitleText)
                                     .foregroundColor(Color.AppPrimaryTextField)
-                                //Spacer()
+                               
                                 Text(detail.openTime)
                                     .font(.cardSmallText)
                                     .foregroundColor(Color.AppPrimaryTextField)
@@ -100,8 +108,6 @@ struct AdventureDetailView: View {
                                 
                                 )
     
-                                    
-                                
 
                             }
                             .padding(.horizontal,16)
@@ -154,7 +160,27 @@ struct AdventureDetailView: View {
                     
                     ProgressView("Loading Details...")
                         .padding()
+                    
+                    //alerts
+                    .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
+                        Alert(
+                            title: Text("Session Expired"),
+                            message: Text("Please login again"),
+                            dismissButton: .default(Text("OK")){
+                                DispatchQueue.main.async{
+                                    TokenManager.shared.sessionLogout()
+                                    isLogin = false
+                                    adventurePlaceModel.showSessionExpireAlert = false
+                                    
+                                }
+                                                
+                            }
+                        )
+                    }
+
                 }
+                
+                
             }.onAppear{
                 adventurePlaceModel.fetchPlacesByID(for: placeId)
             }

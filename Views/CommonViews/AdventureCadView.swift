@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct AdventureCadView: View {
+    
     let adventurePlace: AdventurePlace
     @State private var navigateToSchedule = false
-    @State private var isDarkMode = false 
+    @State private var isDarkMode = false
+    
     var body: some View {
         NavigationStack{
             
@@ -77,13 +79,14 @@ struct AdventureCadView: View {
                                 .padding(10)
                             
                         }
+                        
                         //navigate to shedule
                         NavigationLink(
                             destination: ScheduleEvenView(adventureName: adventurePlace.name),
                             isActive: $navigateToSchedule,
                             label: { EmptyView() }
                         )
-                        
+                        //event button
                         Button(action:{
                             navigateToSchedule = true
                         }){
@@ -99,10 +102,8 @@ struct AdventureCadView: View {
                         
                     }
                     
-
                     
                 }
-
                 .padding([.horizontal, .bottom],8)
             }
             .padding()

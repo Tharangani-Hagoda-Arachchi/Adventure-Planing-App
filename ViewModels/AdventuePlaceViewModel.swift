@@ -18,124 +18,97 @@ class AdventuePlaceViewModel : ObservableObject{
     @Published var alertMessage = ""
     @Published var alertTitle = ""
     
+    private var apiService = APIServices.shared
+    
+    //sesion expire allert
+    @Published var showSessionExpireAlert = false
+    
     //load status
     @Published var isLoad = false
     
-    func fetchPlacesByCategory(for categoryId: String, completion: @escaping ([AdventurePlace]) -> Void = { _ in }){
-        //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/places/\(categoryId)") else {return}
+    //backend API call for fetch adventure places by category
+    func fetchPlacesByCategory(for categoryId: String, completion: @escaping ([AdventurePlace]) -> Void = {_ in}){
+        
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
         
         isLoad = true
         
-        //crate  request
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        //send request async way
-        URLSession.shared.dataTask(with: request){
-            data, responce,error in DispatchQueue.main.async{
-                
-                //for nerwork error alert
-                if let error = error{
-                    self.alertTitle = "Error"
-                    self.alertMessage = error.localizedDescription
-                    self.showAlert = true
-                    return
-                    
+        apiService.fetchAdventurePlaces(by: categoryId) { [weak self] result in
+            guard let self = self else { return }
+            
+            self.isLoad = false
+            
+            switch result{
+            case .success(let places):
+                self.places = places
+                completion(places)
+            case .failure(let error):
+                switch error{
+                case .httpError(let code) where code == 401:
+                    self.handleInvalidToken()
+                default:
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
                 }
-                
-                guard let httpResponce = responce as? HTTPURLResponse else {return}
-                
-                if httpResponce.statusCode == 200 {
-                    
-                    if let data = data{
-                        
-                        //decode JSON Data
-                        do{
-                            let decoded = try JSONDecoder().decode([AdventurePlace].self, from: data)
-                            self.places = decoded
-                            completion(decoded)
-                            
-                        } catch{
-                            self.alertTitle = "Decoding Error"
-                            if let jsonStr = String(data: data, encoding: .utf8){
-                                self.alertMessage = "Data could not be read. JSON:\n\(jsonStr)"
-                            } else {
-                                self.alertMessage = error.localizedDescription
-                            }
-                            self.showAlert = true
-                        }
-                    }
-                    
-                }else{
-                    let responseMessage = "Something went wrong"
-                    self.alertTitle = "Error"
-                    self.alertMessage = responseMessage
-                    self.showAlert = true
-                    
-                }
+
             }
-        }.resume()
+            
+        }
+ 
     }
     
-    // fetch places by id
-    func fetchPlacesByID(for id: String, completion: @escaping (AdventurePlace?) -> Void = { _ in }){
-        //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/places/details/\(id)") else {return}
+    //backend API call for fetch adventure place by ID
+    func fetchPlacesByID(for id: String, completion: @escaping (AdventurePlace?) -> Void = {_ in}){
+        
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
         
         isLoad = true
         
-        //crate  request
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        //send request async way
-        URLSession.shared.dataTask(with: request){
-            data, responce,error in DispatchQueue.main.async{
-                
-                //for nerwork error alert
-                if let error = error{
-                    self.alertTitle = "Error"
-                    self.alertMessage = error.localizedDescription
-                    self.showAlert = true
-                    return
-                    
+        apiService.fetchAdventurePlace(by: id) { [weak self] result in
+            guard let self = self else { return }
+            
+            self.isLoad = false
+            
+            switch result{
+            case .success(let place):
+                self.placeDetail = place
+                completion(place)
+            case .failure(let error):
+                switch error{
+                case .httpError(let code) where code == 401:
+                    self.handleInvalidToken()
+                default:
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
                 }
-                
-                guard let httpResponce = responce as? HTTPURLResponse else {return}
-                
-                if httpResponce.statusCode == 200 {
-                    
-                    if let data = data{
-                        
-                        //decode JSON Data
-                        do{
-                            let decoded = try JSONDecoder().decode(AdventurePlace.self, from: data)
-                            self.placeDetail = decoded
-                            completion(decoded)
-                            
-                            
-                        } catch{
-                            self.alertTitle = "Decoding Error"
-                            if let jsonStr = String(data: data, encoding: .utf8){
-                                self.alertMessage = "Data could not be read. JSON:\n\(jsonStr)"
-                            } else {
-                                self.alertMessage = error.localizedDescription
-                            }
-                            self.showAlert = true
-                        }
-                    }
-                    
-                }else{
-                    let responseMessage = "Something went wrong"
-                    self.alertTitle = "Error"
-                    self.alertMessage = responseMessage
-                    self.showAlert = true
-                    
-                }
+
             }
-        }.resume()
+            
+        }
+ 
     }
+    
+
+    
+    //func to handle invalid token
+    private func handleInvalidToken(){
+        TokenManager.shared.sessionLogout()
+        DispatchQueue.main.async{
+            self.showSessionExpireAlert = true
+        }
+    }
+    
+    // function for show error alerts
+    private func showErrorAlert(title: String, message: String){
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
+
     
     
     

@@ -30,6 +30,8 @@ class CreateAccountViewModel : ObservableObject{
     @Published var showAlert = false
     @Published var alertMessage = ""
     @Published var alertTitle = ""
+    
+    private let apiService = APIServices.shared
 
 
     
@@ -71,9 +73,9 @@ class CreateAccountViewModel : ObservableObject{
             errorConfirmPassword = "Password Mismatch"
         }
         
-        if errorName == nil && errorEmail == nil && errorPhone == nil && errorPassword == nil && errorConfirmPassword == nil{
-            isValid = true
-        }
+        isValid = (errorName == nil && errorEmail == nil && errorPhone == nil && errorPassword == nil && errorConfirmPassword == nil)
+             
+        
     }
     
     // validate emai using regex
@@ -96,110 +98,77 @@ class CreateAccountViewModel : ObservableObject{
     
     //backend API call for registration
     func useRegistration(){
-        //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/auths/signup") else {return}
-        
-        let body: [String: Any] = [
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "password": password
-        ]
-        
-        let jsonData = try? JSONSerialization.data(withJSONObject: body)
-        
-        //crate  request
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-        
-        //send request async way
-        URLSession.shared.dataTask(with: request){
-            data, responce,error in DispatchQueue.main.async{
-                
-                //for nerwork error alert
-                if let error = error{
-                    self.alertTitle = "Error"
-                    self.alertMessage = error.localizedDescription
-                    self.showAlert = true
-                    return
-                    
-                }
-                guard let httpResponce = responce as? HTTPURLResponse else {return}
-                
-                var responseMessage = "Something went wrong"
-                var accessToken: String?
-                
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    responseMessage = json["message"] as? String ?? responseMessage
-                    accessToken = json["accessToken"] as? String
-                }
-                
-                if httpResponce.statusCode == 201, let accessToken {
-                    
-                    //save token
-                    TokenManager.shared.saveAccessToken(accessToken)
-                    
-                    // save credential to key chain to faceId login
-                    if let passwordData = self.password.data(using: .utf8){
-                        KeyChainHelper.shared.save(service: "AdventureAPP", account: self.email, data: passwordData)
-                    }
-                    
-                    
-                    // Save email to UserDefaults for Face ID auto-login
-                    UserDefaults.standard.set(self.email, forKey: "LastRegisteredEmail")
-                    UserDefaults.standard.set(true, forKey: "isLoggedIn")
-                    
-                    
-                    self.alertTitle = "Success"
-                    self.alertMessage = "Account created successfully"
-                    
-
-                    
-                    
-                    // clear text fields
-                    self.name = ""
-                    self.email = ""
-                    self.phone = ""
-                    self.password = ""
-                    self.confirmPassword = ""
-                    
-                    // ask permision for fce ID
-                    
-                    BiometricAuthHelper.shared.authenticateWithFaceID{success, _ in
-                        if success{
-                            print("face id setup compete")
-                        }else{
-                            print("face id decline")
-                        }
-                    }
-
-                              
-                          
-                    self.showAlert = true
-
-                    
-
+        apiService.registerUser(name: name, email: email, phone: phone, password: password) { [weak self] result in
+            guard let self = self else{return}
+            
+            switch result {
+            case .success(let response):
+                if let token = response.accessToken{
+                    self.handleSuccessfulRegistration(token: token)
                 } else{
-                    self.alertTitle = "Error"
-                    self.alertMessage = "Failed create account. Try again"
-                    self.showAlert = true
+                    self.showErrorAlert(title: "Error", message: "Failed to create account")
+                }
+            case .failure(let error):
+                if error.localizedDescription.contains("409"){
+                    self.showErrorAlert(title: "Failed Acount Creation", message: "Email is already registered")
                     
+                } else{
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
                 }
-                
-                if httpResponce.statusCode == 409 {
-                    self.alertTitle = "Acount Creation Failed"
-                    self.alertMessage = "Email is already registered"
-                    self.showAlert = true
-                }
-                
             }
-        }.resume()
-        
-        
+        }
     }
+    
+    // function for handle successfull registration
+    private func handleSuccessfulRegistration(token: String){
+        // save access token using token manager
+        TokenManager.shared.saveAccessToken(token)
+        
+        //save credetial to keychain for face ID login
+        if let passwordData = password.data(using: .utf8){
+            KeyChainHelper.shared.save(service: "AdventureAPP", account: email, data: passwordData)
+        }
+        
+        UserDefaults.standard.set(email, forKey: "LastRegisteredEmail")
+        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+        
+        clearFormField()
+        
+        BiometricAuthHelper.shared.authenticateWithFaceID { success, _ in
+            if success{
+                print("Face ID setup completed")
+            }else {
+                print("Face ID declines")
+            }
+            
+        }
+        
+        showSuccessAlert()
+    }
+    
+    //clear fom fields
+    private func clearFormField(){
+        name = ""
+        email = ""
+        phone = ""
+        password = ""
+        confirmPassword = ""
+    }
+    
+    // function for show success alerts
+    private func showSuccessAlert(){
+        alertTitle = "Success"
+        alertMessage = "Acount created successfuly"
+        showAlert = true
+    }
+    
+    // function for show error alerts
+    private func showErrorAlert(title: String, message: String){
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
+
     
 }
 

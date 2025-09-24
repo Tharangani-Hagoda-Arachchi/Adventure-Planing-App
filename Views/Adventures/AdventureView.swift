@@ -9,10 +9,15 @@ import SwiftUI
 
 struct AdventureView: View {
     @State private var selectedTab: Tab = .home
+    
     let categoryId: String
+    
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
     
+    @AppStorage("isLogin") private var isLogin: Bool = false
+    
     private let columns  = [GridItem(.flexible()), GridItem(.flexible())]
+    
     var body: some View {
 
             VStack{
@@ -34,11 +39,30 @@ struct AdventureView: View {
                                 .padding(.horizontal)
                             
                         }
-                        .buttonStyle(PlainButtonStyle()) // 
+                        .buttonStyle(PlainButtonStyle())  
 
                     }
                 }
                 .padding(.top, 16)
+                
+                //alerts
+                .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
+                    Alert(
+                        title: Text("Session Expired"),
+                        message: Text("Please login again"),
+                        dismissButton: .default(Text("OK")){
+                            DispatchQueue.main.async{
+                                TokenManager.shared.sessionLogout()
+                                isLogin = false
+                                adventurePlaceModel.showSessionExpireAlert = false
+                                
+                            }
+
+                                            
+                        }
+                    )
+                }
+
             }
             .padding(.bottom,16)
             .onAppear{

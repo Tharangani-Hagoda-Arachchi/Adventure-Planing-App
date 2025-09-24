@@ -29,6 +29,8 @@ class LoginViewModel : ObservableObject{
     //login status
     @Published var isLogin = false
     
+    private var apiService = APIServices.shared
+    
     
 
     
@@ -47,9 +49,9 @@ class LoginViewModel : ObservableObject{
             errorPassword = "Enter Your Password"
         }
         
-        if errorEmail == nil && errorPassword == nil {
-            isValid = true
-        }
+        isValid = (errorEmail == nil && errorPassword == nil )
+           
+        
     }
     
     //backend API call for login
@@ -58,75 +60,46 @@ class LoginViewModel : ObservableObject{
         let loginEmail = email ?? self.email
         let loginPassword = password ?? self.password
         
-        //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/auths/signin") else {return}
-        
-        let body: [String: Any] = [
+        apiService.loginUser(email: loginEmail, password: loginPassword) { [weak self] result in
+            guard let self = self else{return}
             
-            "email": loginEmail,
-            "password": loginPassword
-        ]
-        
-        let jsonData = try? JSONSerialization.data(withJSONObject: body)
-        
-        //crate  request
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-        
-        //send request async way
-        URLSession.shared.dataTask(with: request){
-            data, responce,error in DispatchQueue.main.async{
-                
-                //for nerwork error alert
-                if let error = error{
-                    self.alertTitle = "Error"
-                    self.alertMessage = error.localizedDescription
-                    self.showAlert = true
-                    return
-                    
+            switch result {
+            case .success(let response):
+                if let success = response.success, success, let token =  response.accessToken{
+                    self.handleSuccessfulRLogin(email: loginEmail, token: token)
+                } else{
+                    self.showErrorAlert(title: "Error", message: response.message)
                 }
-                guard let httpResponce = responce as? HTTPURLResponse else {return}
-                
-                //get responce message as string
-                var responseMessage = "Something went wrong"
-                var accessToken: String?
-                
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    responseMessage = json["message"] as? String ?? responseMessage
-                    
-                    if let success = json["success"] as? Bool, success,
-                       let token = json["accessToken"] as? String {
-                        accessToken = token
-                    }
-                    
-                }
-                
-                if let accessToken = accessToken {
-                    // save token
-                    TokenManager.shared.saveAccessToken(accessToken)
+            case .failure(let error):
+                self.showErrorAlert(title: "Error", message: error.localizedDescription)
 
-                    // Save email for Face ID
-                    UserDefaults.standard.set(loginEmail, forKey: "LastRegisteredEmail")
-                    
-                    // clear text fields
-                    self.email = ""
-                    self.password = ""
-                    self.isLogin = true
-                    
-                }else{
-                    self.alertTitle = "Error"
-                    self.alertMessage = responseMessage
-                    self.showAlert = true
-                    
-                }
-
-                
             }
-        }.resume()
+        
+            
+        }
+        
     }
+    
+    // function for handle successfull login
+    private func handleSuccessfulRLogin(email: String, token: String){
+        // save access token using token manager
+        TokenManager.shared.saveAccessToken(token)
+        
+        UserDefaults.standard.set(email, forKey: "LastRegisteredEmail")
+        
+        self.email = ""
+        self.password = ""
+        self.isLogin = true
+
+    }
+    
+    // function for show error alerts
+    private func showErrorAlert(title: String, message: String){
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
+
     
     //get save email function
     private func getSavedEmail() -> String?{

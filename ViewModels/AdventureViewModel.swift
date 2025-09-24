@@ -15,41 +15,63 @@ class AdventureViewModel : ObservableObject{
     @Published var selectedItem: Adventure? = nil
     @Published var selectedAdventureId: Adventure? = nil
     
+    //alert
+    @Published var showAlert = false
+    @Published var alertMessage = ""
+    @Published var alertTitle = ""
+    
+    //sesion expire allert
+    @Published var showSessionExpireAlert = false
+    
+    private var apiService = APIServices.shared
+    
     
     
     //backend API call for fetch adventures
     func fetchAdventure(){
-        //backend url
-        guard let url = URL(string: "http://13.60.76.232/api/adventures") else {return}
-        
-        
-        //crate  request
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        
-        //send request async way
-        URLSession.shared.dataTask(with: request){
-            data, responce,error in
-            if let data = data {
-                do{
-                    let responce = try JSONDecoder().decode([Adventure].self, from: data)
-                    DispatchQueue.main.async{
-                        self.adventures = responce
-                    }
-                } catch {
-                    print("Decoding error")
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
+        apiService.fetchAdventures { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result{
+            case .success(let adventures):
+                self.adventures = adventures
+            case .failure(let error):
+                switch error{
+                case .httpError(let code) where code == 401:
+                    self.handleInvalidToken()
+                default:
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
                 }
-                
+
             }
             
-        }.resume()
+        }
+ 
     }
     
     func selectAdventure(_ adventure: Adventure){
         selectedItem = adventure
     }
     
+    //func to handle invalid token
+    private func handleInvalidToken(){
+        TokenManager.shared.sessionLogout()
+        DispatchQueue.main.async{
+            self.showSessionExpireAlert = true
+        }
+    }
+    
+    // function for show error alerts
+    private func showErrorAlert(title: String, message: String){
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
+
 
     
 }

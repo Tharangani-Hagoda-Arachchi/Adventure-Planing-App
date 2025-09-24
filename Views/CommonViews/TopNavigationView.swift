@@ -15,16 +15,23 @@ struct TopNavigationView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    var showBackButton: Bool = true
+    
     var body: some View {
             
             HStack(spacing:12){
-                Button(action: {
-                    dismiss()  // default back
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.title2)
-                        .foregroundColor(Color.AppPrimaryTextField)
+                if showBackButton{
+                    
+                    Button(action: {
+                        dismiss()  // default back
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(Color.AppPrimaryTextField)
+                    }
+                    
                 }
+
                 Spacer()
                 //notification
                 NavigationLink(destination: NotificationView()){

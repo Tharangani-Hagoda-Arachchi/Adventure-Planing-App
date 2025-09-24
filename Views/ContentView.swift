@@ -10,21 +10,35 @@ import SwiftUI
 struct ContentView: View {
     
     @AppStorage("isLogin") private var isLogin: Bool = false
-    @StateObject private var loginVM = LoginViewModel()
+    @State private var isLoading: Bool = true
+    @State private var navigateToLogin: Bool = true
     
     var body: some View {
-        Group{
-            if isLogin{
-                MainTabView()
-                
-            }else{
-                LoadingView()
-                
+        NavigationStack{
+            ZStack{
+                if isLoading{
+                    LoadingView()
+                        .onAppear{
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                                isLoading = false
+                            }
+                            
+                        }
+                    
+                    
+                }else{
+                    if isLogin {
+                        MainTabView()
+                    } else {
+                        LoginView()
+                    }
+                    
+                }
             }
-            
         }
-
     }
+
+    
 }
 
 #Preview {

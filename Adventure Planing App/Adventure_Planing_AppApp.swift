@@ -11,6 +11,7 @@ import SwiftUI
 struct Adventure_Planing_AppApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = false
     
+    
     var body: some Scene {
         WindowGroup {
 
