@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AdventureView: View {
     @State private var selectedTab: Tab = .home
+    @State private var showSearch: Bool = false 
     
     let categoryId: String
     
@@ -69,7 +70,7 @@ struct AdventureView: View {
                 adventurePlaceModel.fetchPlacesByCategory(for: categoryId)
             }
             .navigationBarHidden(true)
-        BottemTabBarView(selectedTab: $selectedTab)
+        BottemTabBarView(selectedTab: $selectedTab,showSearch: $showSearch)
                         .edgesIgnoringSafeArea(.bottom)
             
         

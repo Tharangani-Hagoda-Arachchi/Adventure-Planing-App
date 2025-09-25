@@ -92,6 +92,54 @@ class AdventuePlaceViewModel : ObservableObject{
  
     }
     
+    //backend API call for fetch adventure place by ID
+    func serchPlacesByName(query: String, completion: @escaping ([AdventurePlace]) -> Void = {_ in}){
+        
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
+        
+        isLoad = true
+        
+        guard !query.isEmpty else {
+            self.places = []
+            return
+        }
+        
+       
+        
+        apiService.SearchAdventurePlaces(query: query) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async{
+                self.isLoad = false
+                
+                switch result{
+                case .success(let places):
+                    self.places = places
+                    completion(places)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    case .serverError(let message) where message.contains("No matching adventure sites found"):
+                        self.places = []
+                        completion([])
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
+
+                }
+                
+                
+            }
+            
+  
+        }
+ 
+    }
+    
 
     
     //func to handle invalid token

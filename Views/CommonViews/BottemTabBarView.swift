@@ -13,7 +13,6 @@ enum Tab: Equatable{
     case map
     case event
     case packages
-    case search
     case none
 }
 
@@ -35,19 +34,23 @@ struct BottemTabBarView: View {
                 HStack{
                     TabButtonView(systemImage: "house.fill",title: "Home", isSelect:selectedTab == .home){
                         selectedTab = .home
+                        showSearch = false
                     }
                     
                     TabButtonView(systemImage: "location.fill",title: "Map", isSelect:selectedTab == .map){
-                    
                         selectedTab = .map
+                        showSearch = false
                         
                     }
                     TabButtonView(systemImage: "calendar.badge.plus",title: "Events", isSelect:selectedTab == .event){
                         selectedTab = .event
+                        showSearch = false
                     }
                     TabButtonView(systemImage: "suitcase.fill",title: "Packages", isSelect:selectedTab == .packages){
                         selectedTab = .packages
+                        showSearch = false
                     }
+                    
                     
                 }
                 .padding(.horizontal, 16)
@@ -68,7 +71,7 @@ struct BottemTabBarView: View {
                         .background(Circle().fill(Color.white))
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
                           .shadow(radius: 4)
-                        
+                          .animation(.easeInOut(duration: 0.2), value: showSearch)
                 }
                 
             }.padding(.horizontal,16)

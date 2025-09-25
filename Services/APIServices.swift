@@ -100,6 +100,7 @@ enum APIError: Error, LocalizedError{
                     request.httpBody = try JSONSerialization.data(withJSONObject: body)
                 } catch{
                     completion(.failure(.decordingError(error, nil)))
+                    return
                 }
             }
             
@@ -136,7 +137,15 @@ enum APIError: Error, LocalizedError{
                     }else if httpResponse.statusCode == 401{
                         completion(.failure(.httpError(401))) // Session expired
                         
-                    } else{
+                    }else if httpResponse.statusCode == 404{
+                        
+                        if Model.self == [Packages].self || Model.self == [AdventurePlace].self{
+                            let msg = self.extractErrorMessage(from: data) ?? "Not found"
+                            completion(.failure(.serverError(msg)))
+                            
+                        }
+                        
+                    }else{
                         let errorMessage = self.extractErrorMessage(from: data) ?? "Something went wrong"
                         completion(.failure(.serverError(errorMessage)))
                     }
@@ -259,6 +268,42 @@ enum APIError: Error, LocalizedError{
             
             performRequest(
                 endpoint: "packages/\(categoryId)",
+                method: .GET,
+                responceType: [Packages].self,
+                completion: completion
+            )
+        }
+        
+        
+        //function for serch all adventure places by name
+        func SearchAdventurePlaces( query: String, completion: @escaping (Result<[AdventurePlace], APIError>) -> Void){
+            
+            //encode url
+            guard let encodedPlace = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                completion(.failure(.invalidURL))
+                return
+            }
+            
+            performRequest(
+                endpoint: "search/adventures?query=\(encodedPlace)",
+                method: .GET,
+                responceType: [AdventurePlace].self,
+                completion: completion
+            )
+        }
+        
+        
+        //function for serch all packages by name
+        func SearchPackages( query: String, completion: @escaping (Result<[Packages], APIError>) -> Void){
+            
+            //encode url
+            guard let encodedPlace = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                completion(.failure(.invalidURL))
+                return
+            }
+            
+            performRequest(
+                endpoint: "search/packages?query=\(encodedPlace)",
                 method: .GET,
                 responceType: [Packages].self,
                 completion: completion

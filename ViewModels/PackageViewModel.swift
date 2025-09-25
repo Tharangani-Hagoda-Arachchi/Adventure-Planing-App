@@ -97,6 +97,58 @@ class PackageViewModel : ObservableObject{
  
     }
     
+    //backend API call for fetch adventure place by ID
+    func serchPackagesByName(query: String, completion: @escaping ([Packages]) -> Void = {_ in}){
+        
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
+        
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !trimmedQuery.isEmpty else {
+            self.packages = []
+            return
+        }
+        
+        isLoad = true
+        
+        
+        apiService.SearchPackages(query: trimmedQuery) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async{
+                self.isLoad = false
+                
+                switch result{
+                case .success(let packages):
+                    self.packages = packages
+                    completion(packages)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    case .serverError(let message) where message.contains("No matching packages foundratana"):
+                        self.packages = []
+                        completion([])
+                    default:
+                        self.packages = []
+                        completion([])
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
+
+                }
+                
+                
+            }
+            
+  
+        }
+ 
+    }
+    
+    
     
     //func to handle invalid token
     private func handleInvalidToken(){
