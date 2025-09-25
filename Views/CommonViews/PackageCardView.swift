@@ -14,10 +14,11 @@ struct PackageCardView: View {
     @State private var selectedPackageId: String? = nil
     
     @State private var navigateToDetail = false
+    
     var body: some View {
         
-        ZStack(alignment: .bottomTrailing) {
-            HStack(alignment:.top, spacing: 12){
+        VStack(spacing: 0) {
+            HStack(alignment:.top, spacing: 16){
                 // if backend load image
                 if let imageData = Data(base64Encoded: package.packageImage.components(separatedBy: ",").last ?? ""),
                    let uiImage = UIImage(data: imageData){
@@ -41,29 +42,41 @@ struct PackageCardView: View {
                         .frame(width: 100, height: 100)
                 }
                 
-                VStack(alignment:.leading, spacing: 4){
-                    HStack{
+                VStack(alignment:.leading, spacing: 8){
+                    HStack(alignment: .top){
                         //name
                         Text(package.name)
                             .font(Font.cardTitleText)
                             .foregroundColor(Color.AppPrimaryTextField)
                        Spacer()
+                        //favourite button
+                        Button(action:{}){
+                            Image(systemName: "heart")
+                                .foregroundColor(Color.AppPrimaryTextField)
+                                .padding(8)
+                                .background(Color.AppButtonText)
+                                .clipShape(Circle())
+                                .shadow(radius: 3)
+                                .padding(10)
+                            
+                        }
                         
-
                         
                     }
                     
                     
-                    Text(String(format: "%.2f", package.price))
-                        .font(Font.cardSubTitleSmallText)
-                        .foregroundColor(Color.AppPrimaryTextField)
-                    
-                    Text("USD \(String(format: "%.2f", package.time))")
+                    Text("USD \(String(format: "%.2f", package.price))")
                         .font(Font.cardSubTitleText)
                         .foregroundColor(.brown)
                     
-                    Text("Category: \(package.mealAvailability)")
-                        .font(Font.cardSubTitleSmallText)
+                    
+                    Text("Duration: \(package.time)")
+                        .font(Font.cardSmallText)
+                        .foregroundColor(Color.AppPrimaryTextField)
+                    
+                    
+                    Text((package.mealAvailability))
+                        .font(Font.cardSmallText)
                         .foregroundColor(Color.AppPrimaryTextField)
                     
                     //rating
@@ -75,7 +88,7 @@ struct PackageCardView: View {
                     
             }
             Button(action: {
-                packageModel.fetchPackageByID(for: package.id)
+                //packageModel.fetchPackageByID(for: package.id)
                 navigateToDetail = true
             }) {
                     
@@ -94,7 +107,7 @@ struct PackageCardView: View {
                     //isActive: $navigateToDetail,
                     //label: { EmptyView() }
                 //)
-                .hidden()
+                //.hidden()
                         
                 
             

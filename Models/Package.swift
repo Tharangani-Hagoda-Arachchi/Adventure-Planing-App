@@ -14,8 +14,9 @@ struct Packages:Identifiable,Codable{
     let time: String
     let place: String
     let mealAvailability: String
-    let description: Double
+    let description: String
     let ratings: Double
+    let categoryId: String
     let packageImage: String
     
     enum CodingKeys: String, CodingKey {
@@ -27,6 +28,7 @@ struct Packages:Identifiable,Codable{
         case mealAvailability
         case description
         case ratings
+        case categoryId
         case packageImage
         
         }

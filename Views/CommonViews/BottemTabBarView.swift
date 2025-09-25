@@ -13,12 +13,15 @@ enum Tab: Equatable{
     case map
     case event
     case packages
+    case search
     case none
 }
 
 struct BottemTabBarView: View {
    
     @Binding var selectedTab: Tab
+    @Binding var showSearch: Bool
+    
     //@State private var homePath = NavigationPath()
    // @State private var mapPath = NavigationPath()
    // @State private var eventPath = NavigationPath()
@@ -56,8 +59,9 @@ struct BottemTabBarView: View {
                 //serch icon
                 Button(action:{
                     //serch logic
+                    showSearch.toggle()
                 }) {
-                    Image(systemName: "magnifyingglass")
+                    Image(systemName: showSearch ? "xmark" : "magnifyingglass")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
                         .padding()

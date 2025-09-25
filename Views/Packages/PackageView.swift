@@ -12,11 +12,12 @@ struct PackageView: View {
     @StateObject private var packageModel = PackageViewModel()
     @StateObject private var adventureViewModel = AdventureViewModel()
     @State private var selectedCategoryId: String? = nil
-    
+    @State private var showPlaces = false
+ 
     var body: some View {
         
         NavigationStack{
-            VStack(spacing: 12){
+            VStack(){
                 //tap navigation bar
                 TopNavigationView()
                 
@@ -24,22 +25,61 @@ struct PackageView: View {
                     .font(Font.buttonLargeText)
                     .foregroundColor(Color.AppPrimaryTextField)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal,20)
+                    //.padding(.horizontal)
+                
+                // display adventure categories
+                AdventureCategoryRaw(adventureViewModel: adventureViewModel, onCategorySelected: { categoryId in
+                    
+                    //select same category again then show all packages
+                    if selectedCategoryId == categoryId{
+                        selectedCategoryId = nil
+                        packageModel.fetchAllPackages()
+                        print("Fetching all packages")
+                    }else{
+                        selectedCategoryId = categoryId
+                        packageModel.fetchPackagesByCategoryName(for: categoryId)
+                        showPlaces = true
+                        print("Fetching packages for category: \(categoryId)")
+                    }
+
+                }, selectedCategoryId: selectedCategoryId
+            ).padding(.bottom,12)
+                
+
+                
                 
                 ScrollView{
-                    LazyVStack(spacing: 12){
-                        ForEach(packageModel.packages){ package in
-                            PackageCardView(package: package)
-                            
+                    if packageModel.isLoad{
+                        VStack{
+                            ProgressView("Loading")
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .padding()
                         }
+                    }else if packageModel.packages.isEmpty{
+                        Text("No packages found this category")
+                            .foregroundColor(.gray)
+                            .padding()
+                    }else{
+                        
+                        LazyVStack(){
+                            ForEach(packageModel.packages){ package in
+                                PackageCardView(package: package)
+                                
+                            }
+                        
+                        }
+                    
                     }
                 }
                 
                 
-            }
+            }.padding()
         }.onAppear{
-            packageModel.fetchPackages()
+            adventureViewModel.fetchAdventure()
+            packageModel.fetchAllPackages()
+            
         }
+        .navigationBarHidden(true)
                 
 
     }

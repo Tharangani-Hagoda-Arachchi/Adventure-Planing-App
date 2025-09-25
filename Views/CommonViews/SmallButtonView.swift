@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SmallButtonView: View {
     var title: String
-
+    var isSelected: Bool
     var action: () -> Void
     
     var body: some View {
@@ -21,7 +21,7 @@ struct SmallButtonView: View {
                 .frame(maxWidth:200)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background((Color.AppPrimaryTextField.opacity(0.1)))
+                .background( isSelected ? Color.AppPrimary.opacity(0.4) : Color.AppPrimaryTextField.opacity(0.1))
                 .cornerRadius(15)
                 .shadow(radius: 4)
             

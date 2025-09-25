@@ -9,7 +9,9 @@ import SwiftUI
 
 struct AdventureCategoryRaw: View {
     @ObservedObject var adventureViewModel: AdventureViewModel
+
     var onCategorySelected: (String) -> Void
+    var selectedCategoryId: String?
     
     var body: some View {
         
@@ -17,7 +19,7 @@ struct AdventureCategoryRaw: View {
             HStack(spacing: 10){
 
                 ForEach(adventureViewModel.adventures) { adventure in
-                    SmallButtonView(title: adventure.adventureType){
+                    SmallButtonView(title: adventure.adventureType, isSelected: selectedCategoryId == adventure.id){
                         adventureViewModel.selectAdventure(adventure)
                         onCategorySelected(adventure.id)
                         

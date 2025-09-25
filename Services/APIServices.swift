@@ -243,6 +243,28 @@ enum APIError: Error, LocalizedError{
             )
         }
         
+        //function for fetch  all packages
+        func fetchPackages( completion: @escaping (Result<[Packages], APIError>) -> Void){
+            
+            performRequest(
+                endpoint: "packages",
+                method: .GET,
+                responceType: [Packages].self,
+                completion: completion
+            )
+        }
+        
+        //function for fetch all packages  by category
+        func fetchPackagesByCategory( by categoryId: String, completion: @escaping (Result<[Packages], APIError>) -> Void){
+            
+            performRequest(
+                endpoint: "packages/\(categoryId)",
+                method: .GET,
+                responceType: [Packages].self,
+                completion: completion
+            )
+        }
+        
         //create url function
         private func createURL(for endpoint: String) -> URL?{
             return URL(string: "\(baseURL)/\(endpoint)")
