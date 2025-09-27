@@ -19,4 +19,6 @@ struct AdventureEvent: Identifiable{
     let manualBreakfast: Bool
     let manualLunch : Bool
     let manualTea: Bool
+    
+    var calendarId: String? = nil
 }

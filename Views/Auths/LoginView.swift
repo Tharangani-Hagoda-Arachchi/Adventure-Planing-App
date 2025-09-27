@@ -9,6 +9,8 @@ import SwiftUI
 
 struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
     
     var body: some View {
         NavigationStack{
@@ -28,10 +30,13 @@ struct LoginView: View {
                     VStack{
                         Text("Login")
                             .font(Font.TitleText)
+                            .foregroundColor(fontColor)
                         Text("Let's Get Started")
                             .font(Font.SubTitleText)
+                            .foregroundColor(fontColor)
                         Text("Log Your Account")
                             .font(Font.SubTitleSmallText)
+                            .foregroundColor(fontColor)
                         
                     }
                     .padding()
@@ -104,10 +109,10 @@ struct LoginView: View {
                     .padding(.horizontal, 16)
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color.white)
+                .background(backgroundColor)
                 .cornerRadius(30)
                 .shadow(radius: 5)
-            }
+            } .preferredColorScheme(isDarkMode ? .dark : .light)
             
             
         }
@@ -118,6 +123,16 @@ struct LoginView: View {
         }
             
         }
+    
+    //color according to mode
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    private var backgroundColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField : Color.AppButtonText
+        
+    }
         
     
 }

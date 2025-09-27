@@ -3,14 +3,23 @@ import MapKit
 
 struct MapView: View {
     
+    
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     @StateObject private var adventureModel = AdventureViewModel()
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
+    
     @State private var selectedTab: Tab = .map
+    
+    //for selection of one place
+    var selectedPlace: AdventurePlace? = nil
     
     @State private var lookAroundScene: MKLookAroundScene?
     @State private var isShowingLookAround = false
     
     @State private var route: MKRoute?
+    
     @State private var cameraPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 37.3346, longitude: -122.009),
@@ -24,8 +33,8 @@ struct MapView: View {
         VStack {
             ZStack(alignment: .top) {
                 Map(position: $cameraPosition) {
-
-
+                    
+                    
                     
                     ForEach(adventurePlaceModel.places) { place in
                         Annotation(
@@ -36,45 +45,31 @@ struct MapView: View {
                             ),
                             anchor: .bottom
                         ) {
-                            VStack(spacing: 4) {
-                                Image(systemName: "location")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 20, height: 20)
-                                    .padding(7)
-                                    .background(.blue.gradient, in: .circle)
-                                
-                                Text(place.name)
-                                    .font(.cardSmallText)
-                                    .padding(4)
-                                    .background(Color.AppButtonText)
-                                    .cornerRadius(5)
-                                    .contextMenu {
-                                        Button("Open Look Around", systemImage: "binoculars") {
-                                            Task {
-                                                if let scene = await getLookAroundScene(
-                                                    from: CLLocationCoordinate2D(
-                                                        latitude: place.latitude,
-                                                        longitude: place.longitude
-                                                    )
-                                                ) {
-                                                    lookAroundScene = scene
-                                                    isShowingLookAround = true
-                                                }
-                                            }
-                                        }
-                                        
-                                        Button("Get Direction", systemImage: "arrow.turn.down.right") {
-                                            let destination = CLLocationCoordinate2D(
-                                                    latitude: place.latitude,
-                                                    longitude: place.longitude
-                                                )
-                                                getDirections(to: destination)
-                                            
+                            MapAnnotationView(
+                                place: place,
+                                fontColor: fontColor,
+                                markerColor: markerColor,
+                                onLookAround: {
+                                    Task{
+                                        if let scene = await getLookAroundScene(from: CLLocationCoordinate2D(
+                                            latitude: place.latitude,
+                                            longitude: place.longitude
+                                        )
+                                        ){
+                                            lookAroundScene = scene
+                                            isShowingLookAround = true
                                         }
                                     }
-                            }
+                                },
+                                onGetDirection: {
+                                    let destination = CLLocationCoordinate2D(
+                                        latitude: place.latitude,
+                                        longitude: place.longitude
+                                    )
+                                    getDirections(to: destination)
+                                }
+                            )
+                            
                         }
                     }
                     
@@ -83,15 +78,30 @@ struct MapView: View {
                     
                     if let route{
                         MapPolyline(route)
-                            .stroke(Color.blue, lineWidth: 3)
+                            .stroke(Color.red, lineWidth: 4)
                     }
                 }
                 
                 .onAppear {
                     adventureModel.fetchAdventure()
+                    adventurePlaceModel.fetchAllAdventure()
                     locationManager.requestWhenInUseAuthorization()
+                    
+                    //for selected place
+                    if let place = selectedPlace{
+                        let region = MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude), span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            
+                        )
+                        cameraPosition = .region(region)
+                    }
                 }
-                .navigationBarHidden(true)
+                .onChange(of: adventurePlaceModel.places){ _, newPlace in
+                    adjustCamera(places: newPlace)
+                    
+                }
+                //.navigationBarHidden(true)
+                
                 .mapControls {
                     VStack {
                         Spacer(minLength: 300)
@@ -122,23 +132,54 @@ struct MapView: View {
                                 let point = MKMapPoint(coordinate)
                                 let rect = MKMapRect(x: point.x, y: point.y, width: 0.01, height: 0.01)
                                 mapRect = mapRect.union(rect)
-                        
+                                
                                 let region = MKCoordinateRegion(mapRect)
                                 
                                 cameraPosition = .region(region)
                             }
-
+                            
                         }
                         
                     }.padding(.vertical, 8)
-                     .padding(.horizontal, 12)
-                     .background( Capsule().fill(Color.white).overlay(Capsule().stroke(Color.white, lineWidth: 1)))
-                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .background( Capsule().fill(backgroundColor).overlay(Capsule().stroke(backgroundColor, lineWidth: 1)))
+                        .foregroundColor(fontColor)
                         .padding(.horizontal, 20)
                         .padding(.bottom, 16)
                 }
-
+                
             }
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
+    }
+    
+    //adjust camera to show all
+    func adjustCamera(places: [AdventurePlace]){
+        guard !places.isEmpty else{return}
+        
+        let coordinates = places.map {
+            CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+        }
+        let latitudes = coordinates.map { $0.latitude }
+        let longitudes = coordinates.map { $0.longitude }
+        
+        let minLat = latitudes.min() ?? 0
+        let maxLat = latitudes.max() ?? 0
+        let minLng = longitudes.min() ?? 0
+        let maxLng = longitudes.max() ?? 0
+        
+        let centerLat = (minLat + maxLat) / 2
+        let centerLng = (minLng + maxLng) / 2
+        
+        let latDelta = max(maxLat - minLat, 0.01) * 1.2
+        let lngDelta = max(maxLng - minLng, 0.01) * 1.2
+        
+        let region = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLng),
+            span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lngDelta)
+        )
+        
+        withAnimation(.easeInOut(duration: 1.0)){
+            cameraPosition = .region(region)
         }
     }
     
@@ -178,8 +219,26 @@ struct MapView: View {
                 route = directions.routes.first
             } catch{
                 print("Show error \(error.localizedDescription)")
-               
+                
             }
         }
+    }
+    
+    
+    
+    //color change according to theme
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var markerColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField: Color.AppButtonText
+        
+    }
+    
+    private var backgroundColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField.opacity(0.7): Color.AppButtonText
+        
     }
 }

@@ -11,14 +11,19 @@ struct AdventureCadView: View {
     
     let adventurePlace: AdventurePlace
     @State private var navigateToSchedule = false
-    @State private var isDarkMode = false
+    @State private var navigateToMap = false
+    //@State private var isFavourite = false
+    @StateObject private var favouriteVModel = FavouriteViewModel()
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     
     var body: some View {
         NavigationStack{
             
             VStack(alignment: .leading, spacing: 8){
                 ZStack(alignment: .topTrailing){
-                    
+                    //image
                     if let imageData = Data(base64Encoded: adventurePlace.siteImage.components(separatedBy: ",").last ?? ""),
                        let uiImage = UIImage(data: imageData){
                         Image(uiImage: uiImage)
@@ -31,13 +36,19 @@ struct AdventureCadView: View {
                     }
                     
                     //favourite button
-                    Button(action:{}){
-                        Image(systemName: "heart")
-                            .foregroundColor(Color.AppPrimaryTextField)
+                    Button(action:{
+                        if favouriteVModel.isFavourite(placeId: adventurePlace.id){
+                            favouriteVModel.removeFavouritePlaces(placeId: adventurePlace.id)
+                        }else{
+                            favouriteVModel.addFavouritePlaces(place: adventurePlace)
+                        }
+                    }){
+                        Image(systemName: favouriteVModel.isFavourite(placeId: adventurePlace.id) ? "heart.fill" : "heart")
+                            .foregroundColor(favouriteVModel.isFavourite(placeId: adventurePlace.id) ? .red : favoriteIcon)
                             .padding(8)
-                            .background(Color.AppButtonText)
+                            .background(buttonBackgroundColor)
                             .clipShape(Circle())
-                            .shadow(radius: 3)
+                            .shadow(color: buttonShadowColor,radius: 3)
                             .padding(10)
                         
                     }
@@ -50,6 +61,7 @@ struct AdventureCadView: View {
                     
                     Text(adventurePlace.name)
                         .font(.cardTitleText)
+                        .foregroundColor(fontColor)
                     
                     
                     //rating stars
@@ -65,17 +77,24 @@ struct AdventureCadView: View {
                     HStack{
                         Text(adventurePlace.openTime)
                             .font(.cardSmallText)
+                            .foregroundColor(fontColor)
                         
+                        //navigate to location
+                        NavigationLink(
+                            destination: MapView(selectedPlace: adventurePlace),
+                            isActive: $navigateToMap,
+                            label: { EmptyView() }
+                        )
                         Button(action:{
-                            
+                            navigateToMap = true
                             
                         }){
                             Image(systemName: "location.fill")
-                                .foregroundColor(Color.AppPrimaryTextField)
+                                .foregroundColor(actionIconColor)
                                 .padding(8)
-                                .background(Color.AppButtonText)
+                                .background(buttonBackgroundColor)
                                 .clipShape(Circle())
-                                .shadow(radius: 3)
+                                .shadow(color: buttonShadowColor,radius: 3)
                                 .padding(10)
                             
                         }
@@ -91,11 +110,11 @@ struct AdventureCadView: View {
                             navigateToSchedule = true
                         }){
                             Image(systemName: "calendar.badge.plus")
-                                .foregroundColor(Color.AppPrimaryTextField)
+                                .foregroundColor(actionIconColor)
                                 .padding(8)
-                                .background(Color.AppButtonText)
+                                .background(buttonBackgroundColor)
                                 .clipShape(Circle())
-                                .shadow(radius: 3)
+                                .shadow(color: buttonShadowColor,radius: 3)
                                 .padding(10)
                             
                         }
@@ -107,14 +126,51 @@ struct AdventureCadView: View {
                 .padding([.horizontal, .bottom],8)
             }
             .padding()
-            .background(Color.AppButtonText)
+            .background(cardbackgroundColor)
             .cornerRadius(16)
-            .shadow(color: Color.AppPrimaryTextField.opacity(0.4), radius:5 , x:0, y: 2)
+            .shadow(color: cardShadowColor, radius:5 , x:0, y: 2)
             
         }
-        .darkTheme(isDarkMode: $isDarkMode)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
 
     }
+    
+    //color according to mode
+    private var favoriteIcon: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var buttonBackgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.3) : Color.AppButtonText
+        
+    }
+    
+    private var buttonShadowColor: Color{
+        isDarkMode ? Color.AppButtonText.opacity(0.1) : Color.AppPrimaryTextField.opacity(0.3)
+        
+    }
+    
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var actionIconColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var cardbackgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.2) : Color.AppButtonText
+        
+    }
+    
+    private var cardShadowColor: Color{
+        isDarkMode ? Color.AppButtonText.opacity(0.1) : Color.AppPrimaryTextField.opacity(0.4)
+        
+    }
+      
 }
 
 

@@ -13,27 +13,44 @@ struct TabButtonView: View {
     let isSelect: Bool
     let action: () -> Void
     
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     var body: some View {
         Button(action: action){
             VStack{
                 Image(systemName: systemImage)
                     .font(Font.primaryRegularText)
-                    .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+                    .foregroundColor(iconColor)
                 Text(title)
                     .font(.caption)
-                    .foregroundColor(isSelect ? Color.AppSecondary : Color.black)
+                    .foregroundColor(fontColor)
             }
 
             .padding(.vertical,10)
             .frame(maxWidth: .infinity)
-            //.background(isSelect ? Color.AppSecondary.opacity(0.5) : Color.clear)
-            //.onTapGesture {
-               // action()
-            //}
-            
-            
-        }
+
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
         
     }
+    
+    //adjust icon collor according to  mode
+    private var iconColor: Color{
+        if isDarkMode{
+            return isSelect ? Color.AppSecondary: Color.AppButtonText
+        }else{
+            return isSelect ? Color.AppSecondary: Color.AppPrimaryTextField
+        }
+    }
+    
+    //adjust font collor according to  mode
+    private var fontColor: Color{
+        if isDarkMode{
+            return isSelect ? Color.AppSecondary: Color.AppButtonText
+        }else{
+            return isSelect ? Color.AppSecondary: Color.AppPrimaryTextField
+        }
+    }
+
 }
 

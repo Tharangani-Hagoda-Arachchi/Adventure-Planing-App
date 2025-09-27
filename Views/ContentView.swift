@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @AppStorage("isLogin") private var isLogin: Bool = false
+    @AppStorage("isLogin") private var isLogin: Bool = true
     @State private var isLoading: Bool = true
-    @State private var navigateToLogin: Bool = true
+    //@State private var navigateToLogin: Bool = true
     
     var body: some View {
-        NavigationStack{
+       
             ZStack{
                 if isLoading{
                     LoadingView()
@@ -32,11 +32,13 @@ struct ContentView: View {
                     } else {
                         LoginView()
                     }
+
                     
                 }
+                
             }
         }
-    }
+    
 
     
 }

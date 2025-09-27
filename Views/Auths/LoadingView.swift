@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoadingView: View {
     @State private var navigateToLogin = false
+    
     var body: some View {
         
             NavigationStack{
@@ -29,8 +30,8 @@ struct LoadingView: View {
                                 .foregroundColor(Color.AppButtonText)
                                 .padding(.horizontal, 40)
                                 .padding(.vertical, 14)
-                                .background(Capsule().fill(Color.AppPrimary .opacity(0.27)))
-                                .overlay(Capsule().stroke(Color.AppPrimary, lineWidth: 1))
+                                .background(Capsule().fill(Color.AppPrimary .opacity(0.6)))
+                                .overlay(Capsule().stroke(Color.AppPrimary, lineWidth: 2))
                         }
                         
                         .padding(.bottom, 80)

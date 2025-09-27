@@ -122,7 +122,7 @@ class CreateAccountViewModel : ObservableObject{
     // function for handle successfull registration
     private func handleSuccessfulRegistration(token: String){
         // save access token using token manager
-        TokenManager.shared.saveAccessToken(token)
+        //TokenManager.shared.saveAccessToken(token)
         
         //save credetial to keychain for face ID login
         if let passwordData = password.data(using: .utf8){
@@ -130,9 +130,11 @@ class CreateAccountViewModel : ObservableObject{
         }
         
         UserDefaults.standard.set(email, forKey: "LastRegisteredEmail")
-        UserDefaults.standard.set(true, forKey: "isLoggedIn")
+        //UserDefaults.standard.set(true, forKey: "isLoggedIn")
         
         clearFormField()
+        
+        
         
         BiometricAuthHelper.shared.authenticateWithFaceID { success, _ in
             if success{
@@ -144,6 +146,8 @@ class CreateAccountViewModel : ObservableObject{
         }
         
         showSuccessAlert()
+        
+       
     }
     
     //clear fom fields

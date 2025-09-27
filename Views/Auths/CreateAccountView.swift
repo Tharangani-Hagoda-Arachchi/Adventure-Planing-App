@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct CreateAccountView: View {
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     @StateObject private var registerViewModel = CreateAccountViewModel()
     
     var body: some View {
@@ -27,10 +30,13 @@ struct CreateAccountView: View {
                     VStack{
                         Text("Register")
                             .font(Font.TitleText)
+                            .foregroundColor(fontColor)
                         Text("Let's Get Started")
                             .font(Font.SubTitleText)
+                            .foregroundColor(fontColor)
                         Text("Create New Account")
                             .font(Font.SubTitleSmallText)
+                            .foregroundColor(fontColor)
                         
                     }
                     .padding()
@@ -79,6 +85,7 @@ struct CreateAccountView: View {
                             HStack{
                                 Text("Already have an account")
                                     .font(Font.primarysSemiboldText)
+                                    .foregroundColor(fontColor)
                                 NavigationLink(destination: LoginView()){
                                     Text("Login")
                                         .font(Font.primarysSemiboldText)
@@ -96,7 +103,7 @@ struct CreateAccountView: View {
                     .padding(.horizontal, 16)
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color.white)
+                .background(backgroundColor)
                 .cornerRadius(30)
                 .shadow(radius: 5)
             }
@@ -114,7 +121,18 @@ struct CreateAccountView: View {
             
             
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
         .navigationBarHidden(true)
+        
+    }
+    
+    //color according to mode
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    private var backgroundColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField : Color.AppButtonText
         
     }
 }

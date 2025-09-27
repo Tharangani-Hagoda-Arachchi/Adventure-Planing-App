@@ -9,7 +9,9 @@ import SwiftUI
 
 struct AdventureCategoryRaw: View {
     @ObservedObject var adventureViewModel: AdventureViewModel
-
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     var onCategorySelected: (String) -> Void
     var selectedCategoryId: String?
     
@@ -29,6 +31,6 @@ struct AdventureCategoryRaw: View {
                 }
             }
             
-        }
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }

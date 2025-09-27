@@ -9,6 +9,13 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @AppStorage("isLogin") private var isLogin: Bool = true
+    @StateObject private var userModel = UserViewModel()
+    @State private var navigateDetail = false
+    @State private var navigateLogin = false
+    @State private var showPasswordManager = false
+    @State private var showLogoutAlert = false
+    
     
     var body: some View {
         NavigationStack{
@@ -26,31 +33,34 @@ struct ProfileView: View {
             .padding(.bottom)
             
             VStack{
-                
+                //profile details
                 ProfileRawView(
                     icon: "person.circle",
                     title: "Profile Details",
                     toggleValue: .constant(false),
                     action: {
-                        print("Navigate to Profile Details")
+                        navigateDetail = true
                     }
                     
                 )
+                //mode change
                 ProfileRawView(
                     icon: "sun.max",
                     title: "Change Mode",
                     isToggle: true,
                     toggleValue: $isDarkMode
                 )
+                //password manager
                 ProfileRawView(
                     icon: "lock.circle",
                     title: "Password Manager",
                     toggleValue: .constant(false),
                     action: {
-                        print("Navigate to Password Manage")
+                        showPasswordManager = true
+                        
                     }
                 )
-                
+                //privacy policy
                 ProfileRawView(
                     icon: "shield",
                     title: "Privacy Policy",
@@ -59,6 +69,7 @@ struct ProfileView: View {
                         print("Navigate to privacy policy")
                     }
                 )
+                //helps
                 ProfileRawView(
                     icon: "questionmark.circle",
                     title: "Helps",
@@ -70,8 +81,25 @@ struct ProfileView: View {
                 
                 //logout
                 SecondaryRoundedActionButton(title: "Logout"){
-                    //load packeges function
-                }
+                    showLogoutAlert = true
+                    
+                }.padding(50)
+                
+                    .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Logout", role: .destructive) {
+                            if let _ = userModel.userDetails?.email {
+                                TokenManager.shared.sessionLogout()
+                                isLogin = false
+                                
+                            }
+                            navigateLogin = true
+
+                        }
+                    }
+            }
+            .navigationDestination(isPresented: $navigateLogin) {
+                LoginView()
                 
             }.preferredColorScheme(isDarkMode ? .dark : .light)
                 .padding()
@@ -80,6 +108,30 @@ struct ProfileView: View {
             
             
         }.navigationBarHidden(true)
+        //navigate to profile detail view
+            .navigationDestination(isPresented: $navigateDetail) {
+                if let user = userModel.userDetails {
+                    ProfileDetailView(user: user)
+                } else {
+                    //loading or error state
+                    VStack {
+                        ProgressView()
+                        Text("Loading profile...")
+                            .padding()
+                    }
+                }
+
+                    
+            }.onAppear{
+                userModel.fetchUserById()
+            }
+        
+        //password manager popup sheets
+            .sheet(isPresented: $showPasswordManager) {
+                PasswordManagerView(showSheet: $showPasswordManager)
+                    .presentationDetents([.medium])
+            }
+
         
     }
 }

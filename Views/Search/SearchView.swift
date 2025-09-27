@@ -16,6 +16,8 @@ struct SearchView: View {
     @ObservedObject var adventurePlaceModel: AdventuePlaceViewModel
     @ObservedObject var packageModel: PackageViewModel
     
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
    // let onAdventureSelect: ((AdventurePlace) -> Void)? = nil
    // let onPackageSelect: ((Packages) -> Void)? = nil
     
@@ -29,18 +31,18 @@ struct SearchView: View {
                 }){
                     Image(systemName: "chevron.left")
                         .font(.title2)
-                        .foregroundColor(Color.AppPrimaryTextField)
+                        .foregroundColor(fontColor)
                 }
                 
                 Text("Search")
                     .font(.buttonLargeText)
-                    .foregroundColor(Color.AppPrimaryTextField)
+                    .foregroundColor(fontColor)
                 
                 Spacer()
                 
             }
             .padding()
-            .background(Color.AppButtonText)
+            .background(cardbackgroundColor)
             
             // search bar
             SerchBarView(
@@ -79,11 +81,22 @@ struct SearchView: View {
         }
         
         .frame(maxWidth: .infinity,maxHeight: .infinity)
-        .background(Color.AppButtonText.ignoresSafeArea())
+        .background(cardbackgroundColor.ignoresSafeArea())
         .transition(.move(edge: .bottom).combined(with: .opacity))
         .shadow(radius: 10)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
 
                     
+        
+    }
+    
+    private var cardbackgroundColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField : Color.AppButtonText
+        
+    }
+    
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
         
     }
 }

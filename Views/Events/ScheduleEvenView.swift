@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ScheduleEvenView: View {
     @StateObject private var viewModel = AdventurePlannerViewModel()
+    @StateObject private var favViewModel = FavouriteViewModel()
+    
+    @AppStorage("isDarkMode") private var isDarkMode = false
     
     @State var adventureName: String
     @State private var location = ""
@@ -35,7 +38,7 @@ struct ScheduleEvenView: View {
             
             Text("Shedule Adventure")
                 .font(Font.buttonLargeText)
-                .foregroundColor(Color.AppPrimaryTextField)
+                .foregroundColor(fontColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal,20)
             
@@ -59,18 +62,46 @@ struct ScheduleEvenView: View {
                     Toggle("Edit Breakfast Time", isOn: $manualBreakfast)
                     DatePicker("Breakfast", selection: $breakfastTime, displayedComponents: [.hourAndMinute])
                         .disabled(!manualBreakfast)
+                    //to use same date
+                        .onChange(of: breakfastTime) { newValue in
+                             if manualBreakfast {
+                                 let calendar = Calendar.current
+                                 let timeComponents = calendar.dateComponents([.hour, .minute], from: newValue)
+                                 if let updatedBreakfastTime = calendar.date(bySettingHour: timeComponents.hour ?? 0, minute: timeComponents.minute ?? 0, second: 0, of: startTime) {
+                                     breakfastTime = updatedBreakfastTime
+                                 }
+                             }
+                         }
                     
                     Toggle("Edit Lunch Time", isOn: $manualLunch)
                     DatePicker("Lunch", selection: $lunchTime, displayedComponents: [.hourAndMinute])
                         .disabled(!manualLunch)
+                        .onChange(of: lunchTime) { newValue in
+                            if manualLunch {
+                                let calendar = Calendar.current
+                                let timeComponents = calendar.dateComponents([.hour, .minute], from: newValue)
+                                if let updatedLunchTime = calendar.date(bySettingHour: timeComponents.hour ?? 0, minute: timeComponents.minute ?? 0, second: 0, of: startTime) {
+                                    lunchTime = updatedLunchTime
+                                }
+                            }
+                        }
                     
                     Toggle("Edit Tea Time", isOn: $manualTea)
                     DatePicker("Tea", selection: $teaTime, displayedComponents: [.hourAndMinute])
                         .disabled(!manualTea)
+                        .onChange(of: teaTime) { newValue in
+                            if manualTea {
+                                let calendar = Calendar.current
+                                let timeComponents = calendar.dateComponents([.hour, .minute], from: newValue)
+                                if let updatedTeaTime = calendar.date(bySettingHour: timeComponents.hour ?? 0, minute: timeComponents.minute ?? 0, second: 0, of: endTime) {
+                                    teaTime = updatedTeaTime
+                                }
+                            }
+                        }
                 }
                 
                 Button("Add to Calendar") {
-                    let event = AdventureEvent(
+                    var event = AdventureEvent(
                         title: adventureName,
                         location: location,
                         startDateTime: startTime,
@@ -82,18 +113,23 @@ struct ScheduleEvenView: View {
                         manualLunch: manualLunch,
                         manualTea: manualTea
                     )
-                    viewModel.addAdventureEvent(event)
+                    viewModel.addAdventureEvent(&event)
+                    
+                    //add to core data
+                    favViewModel.addEvent(event: event)
+                    
                     showNotificationOptions = true
                 }
                 .disabled(!viewModel.accessGranted)
                 
             }
-        }
-        NavigationLink(destination: EventView(viewModel: viewModel), isActive: $navigateToEvents) { EmptyView()
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
+        NavigationLink(destination: EventView(viewModel: favViewModel,adventurePlanerVModel: viewModel),isActive: $navigateToEvents) {
+            EmptyView()
         }
         .sheet(isPresented: $showNotificationOptions){
             VStack(spacing:20){
-                Text("Notify before adventie")
+                Text("Notify before adventure")
                     .font(.buttonLargeText)
                 
                 Picker("Minutes Before", selection: $notificationMinutes) {
@@ -103,7 +139,7 @@ struct ScheduleEvenView: View {
                     Text("2 hours").tag(120)
                     Text("1 day").tag(1440)
                 }
-                .pickerStyle(WheelPickerStyle())
+                .pickerStyle(PalettePickerStyle())
                 
                 Button("Confirm") {
                     if let lastEvent = viewModel.adventureEvents.last {
@@ -114,6 +150,7 @@ struct ScheduleEvenView: View {
                 }.padding()
                 
             }.padding()
+                .presentationDetents([.medium])
         }
         
         .onAppear {
@@ -141,6 +178,11 @@ private func updateMealTimes() {
         teaTime = Calendar.current.date(byAdding: .hour, value: -1, to: endTime)!
     }
 }
+    //dark mode color change
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
     
 }
 

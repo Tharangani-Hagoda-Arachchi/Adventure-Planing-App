@@ -13,17 +13,20 @@ struct PackageView: View {
     @StateObject private var adventureViewModel = AdventureViewModel()
     @State private var selectedCategoryId: String? = nil
     @State private var showPlaces = false
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    //@AppStorage("isLogin") private var isLogin: Bool = false
  
     var body: some View {
         
         NavigationStack{
             VStack(){
                 //tap navigation bar
-                TopNavigationView()
+                TopNavigationView(showBackButton: true)
                 
                 Text("Adventure Packages")
                     .font(Font.buttonLargeText)
-                    .foregroundColor(Color.AppPrimaryTextField)
+                    .foregroundColor(fontColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     //.padding(.horizontal)
                 
@@ -74,6 +77,8 @@ struct PackageView: View {
                 
                 
             }.padding()
+             .preferredColorScheme(isDarkMode ? .dark : .light)
+            
         }.onAppear{
             adventureViewModel.fetchAdventure()
             packageModel.fetchAllPackages()
@@ -82,6 +87,11 @@ struct PackageView: View {
         .navigationBarHidden(true)
                 
 
+    }
+    
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
     }
                         
 

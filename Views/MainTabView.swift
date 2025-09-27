@@ -10,11 +10,15 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab: Tab = .home
     @State private var showSearch = false
-    @StateObject private var viewModel = AdventurePlannerViewModel()
+
     
     // shared search view models
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
     @StateObject private var packageModel = PackageViewModel()
+    @StateObject private var favViewModel = FavouriteViewModel()
+    @StateObject  private var adventurePlannerViewModel = AdventurePlannerViewModel()
+
+    @AppStorage("isLogin") private var isLogin: Bool = true
     
     var body: some View {
         VStack(spacing: 0){
@@ -25,7 +29,7 @@ struct MainTabView: View {
                 case .map:
                     MapView()
                 case .event:
-                    EventView(viewModel: viewModel)
+                    EventView(viewModel: favViewModel,adventurePlanerVModel: adventurePlannerViewModel)
                 case .packages:
                     PackageView()
                 case .none:
@@ -54,6 +58,8 @@ struct MainTabView: View {
             }
         )
         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: showSearch)
+        
+        
 
     }
 }

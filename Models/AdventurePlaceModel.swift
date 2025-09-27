@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct AdventurePlace:Identifiable,Codable{
+struct AdventurePlace:Identifiable,Codable, Equatable{
     let id : String
     let name: String
     let latitude: Double

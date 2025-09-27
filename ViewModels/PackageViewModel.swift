@@ -97,6 +97,45 @@ class PackageViewModel : ObservableObject{
  
     }
     
+    //backend API call for fetch packages by id
+    func fetchPackagesById(for id: String, completion: @escaping (Packages?) -> Void = {_ in}){
+        
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
+        
+        isLoad = true
+        packages = []
+        
+        apiService.fetchAdventurePackages(by: id) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.isLoad = false
+                
+                switch result{
+                case .success(let packages):
+                    self.packagesDetail = packages
+                    completion(packages)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
+
+                }
+                
+            }
+
+            
+        }
+ 
+    }
+    
+    
     //backend API call for fetch adventure place by ID
     func serchPackagesByName(query: String, completion: @escaping ([Packages]) -> Void = {_ in}){
         

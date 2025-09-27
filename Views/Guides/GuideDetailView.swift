@@ -11,6 +11,9 @@ struct GuideDetailView: View {
     
     @StateObject private var guideModel = GuideViewModel()
     
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     let guide: Guide
     
     @State private var date = Date()
@@ -79,7 +82,7 @@ struct GuideDetailView: View {
                         .background(Color(.systemBackground))
                         .cornerRadius(20)
                         .shadow(color: .gray.opacity(0.3), radius: 8, x: 0, y: 4)
-                        .padding(.horizontal)
+                        
                     }
                     VStack{
                         TravelDatePickerView(selectedDate: $date, travellers: $travellers)
@@ -94,7 +97,7 @@ struct GuideDetailView: View {
                     .padding()
 
                     
-                }
+                }.preferredColorScheme(isDarkMode ? .dark : .light)
                 
             }
             .navigationDestination(isPresented: $navigateToContact) {

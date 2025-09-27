@@ -13,7 +13,9 @@ struct AdventureDetailView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    @State private var isDarkMode = false
+    
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
     
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
     
@@ -67,7 +69,7 @@ struct AdventureDetailView: View {
                                 //place name
                                 Text(detail.name)
                                     .font(.title2.bold())
-                                    .foregroundColor(Color.AppPrimaryTextField)
+                                    .foregroundColor(fontColor)
                                 Spacer()
                                 
                                 //rating star
@@ -81,11 +83,11 @@ struct AdventureDetailView: View {
                                 //open hours
                                 Text("Open Hours")
                                     .font(.cardTitleText)
-                                    .foregroundColor(Color.AppPrimaryTextField)
-                               
+                                    .foregroundColor(fontColor)
+                                
                                 Text(detail.openTime)
                                     .font(.cardSmallText)
-                                    .foregroundColor(Color.AppPrimaryTextField)
+                                    .foregroundColor(fontColor)
                             }
                             .padding(.horizontal,16)
                             
@@ -94,7 +96,7 @@ struct AdventureDetailView: View {
                                 SecondaryRoundedActionButton(title: "Packages"){
                                     //load packeges function
                                 }
-
+                                
                                 SecondaryRoundedActionButton(title: "Hire Guide"){
                                     navigateToGuide = true
                                     
@@ -105,17 +107,17 @@ struct AdventureDetailView: View {
                                     destination: GuideView(placeName: detail.name),
                                     isActive: $navigateToGuide,
                                     label: { EmptyView() }
-                                
+                                    
                                 )
-    
-
+                                
+                                
                             }
                             .padding(.horizontal,16)
                             
                             //description
                             Text(detail.description)
                                 .font(.cardSmallText)
-                                .foregroundColor(Color.AppPrimaryTextField)
+                                .foregroundColor(fontColor)
                                 .padding(.horizontal,16)
                                 .lineSpacing(4)
                             
@@ -162,22 +164,22 @@ struct AdventureDetailView: View {
                         .padding()
                     
                     //alerts
-                    .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
-                        Alert(
-                            title: Text("Session Expired"),
-                            message: Text("Please login again"),
-                            dismissButton: .default(Text("OK")){
-                                DispatchQueue.main.async{
-                                    TokenManager.shared.sessionLogout()
-                                    isLogin = false
-                                    adventurePlaceModel.showSessionExpireAlert = false
+                        .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
+                            Alert(
+                                title: Text("Session Expired"),
+                                message: Text("Please login again"),
+                                dismissButton: .default(Text("OK")){
+                                    DispatchQueue.main.async{
+                                        TokenManager.shared.sessionLogout()
+                                        isLogin = false
+                                        adventurePlaceModel.showSessionExpireAlert = false
+                                        
+                                    }
                                     
                                 }
-                                                
-                            }
-                        )
-                    }
-
+                            )
+                        }
+                    
                 }
                 
                 
@@ -187,22 +189,29 @@ struct AdventureDetailView: View {
             
             .navigationBarHidden(true)
         }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
+        
+    }
+    
+    //color according to dark theam
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
         
     }
 }
-                        
 
 
-                        
-
-                        
-                        
 
 
-                            
+
+
+
+
+
+
 
 
 
 //#Preview {
-    //AdventureDetailView()
+//AdventureDetailView()
 //}

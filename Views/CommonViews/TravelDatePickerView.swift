@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct TravelDatePickerView: View {
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     @Binding var selectedDate: Date
     @Binding var travellers: Int
     
@@ -19,7 +22,7 @@ struct TravelDatePickerView: View {
             VStack(alignment: .leading, spacing: 4){
                 Text("Date")
                     .font(.cardSubTitleText)
-                    .foregroundColor(Color.AppPrimaryTextField)
+                    .foregroundColor(fontColor)
                 
                 DatePicker(
                     "",
@@ -33,13 +36,14 @@ struct TravelDatePickerView: View {
             
             
             Divider()
-                .frame(height: 40)
+                .frame(height: 60)
+                .foregroundColor(Color.AppPrimary)
             
             // no of travelles picker
             VStack(alignment: .leading, spacing: 4){
-                Text("Travelles")
+                Text("Travellers")
                     .font(.cardSubTitleText)
-                    .foregroundColor(Color.AppPrimaryTextField)
+                    .foregroundColor(fontColor)
                 
                 Picker("Travellers", selection: $travellers) {
                     ForEach(travelRange, id: \.self) { num in
@@ -55,8 +59,20 @@ struct TravelDatePickerView: View {
         .frame(height: 60)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.AppPrimary.opacity(0.4), lineWidth: 1)
+                .stroke(strokeColor, lineWidth: 1)
         )
+        .preferredColorScheme(isDarkMode ? .dark : .light)
+    }
+    
+    //color change according to theme
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var strokeColor: Color{
+        isDarkMode ? Color.AppPrimary : Color.AppPrimary.opacity(0.4)
+        
     }
 }
 

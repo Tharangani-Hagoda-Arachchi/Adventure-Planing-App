@@ -10,6 +10,8 @@ import SwiftUI
 @main
 struct Adventure_Planing_AppApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = false
+    @AppStorage("isLogin") private var isLogin: Bool = true
+ 
     
     
     var body: some Scene {

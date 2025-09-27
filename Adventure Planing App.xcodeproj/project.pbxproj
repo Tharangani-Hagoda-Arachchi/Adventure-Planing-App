@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EC1E3B9E2E861C5000254734 /* AdventurePlacesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC1E3B9C2E861C4F00254734 /* AdventurePlacesModel.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		EC9190812E50C23200DE689E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EC1E3B9D2E861C4F00254734 /* AdventurePlacesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventurePlacesModel.xcdatamodel; sourceTree = "<group>"; };
 		EC9190732E50C22E00DE689E /* Adventure Planing App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Adventure Planing App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC9190802E50C23200DE689E /* Adventure Planing AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Adventure Planing AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC91908A2E50C23200DE689E /* Adventure Planing AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Adventure Planing AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,6 +105,7 @@
 		EC91906A2E50C22E00DE689E = {
 			isa = PBXGroup;
 			children = (
+				EC1E3B9C2E861C4F00254734 /* AdventurePlacesModel.xcdatamodeld */,
 				EC63009B2E56C3D800712321 /* Services */,
 				EC9190B62E50C97E00DE689E /* Resources */,
 				EC91909F2E50C27A00DE689E /* ViewModels */,
@@ -271,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC1E3B9E2E861C5000254734 /* AdventurePlacesModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +604,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		EC1E3B9C2E861C4F00254734 /* AdventurePlacesModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				EC1E3B9D2E861C4F00254734 /* AdventurePlacesModel.xcdatamodel */,
+			);
+			currentVersion = EC1E3B9D2E861C4F00254734 /* AdventurePlacesModel.xcdatamodel */;
+			path = AdventurePlacesModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = EC91906B2E50C22E00DE689E /* Project object */;
 }

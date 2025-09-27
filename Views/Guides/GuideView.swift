@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct GuideView: View {
-@State private var selectedTab : Tab = .none
-@StateObject private var guideModel = GuideViewModel()
+    
+    @State private var selectedTab : Tab = .none
+    @StateObject private var guideModel = GuideViewModel()
+
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
+
     
 let placeName: String
     
@@ -21,7 +27,7 @@ var body: some View {
             
             Text("Hire Guide")
                 .font(Font.buttonLargeText)
-                .foregroundColor(Color.AppPrimaryTextField)
+                .foregroundColor(fontColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal,20)
             
@@ -30,6 +36,7 @@ var body: some View {
                     
                     ProgressView("Loading Details...")
                         .padding()
+                    Spacer()
                 } else if guideModel.guides.isEmpty{
                     VStack(spacing: 12) {
                         Image(systemName: "exclamationmark.triangle")
@@ -45,31 +52,28 @@ var body: some View {
                     //scroll area
                     ScrollView(showsIndicators: false) {
                         
-                        LazyVStack(spacing: 16) {
+                        LazyVStack(spacing: 12) {
                             ForEach(guideModel.guides) { guide in
                                 
                                 GuideCardView(guide:guide)
-                                    .padding(.horizontal)
+                                    
                             }
-                            
-                            .padding(.top, 10)
-                            .padding(.bottom, 10)
                             
                             
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea(edges: [.bottom, .top])
-                        .background(Color.AppButtonText.opacity(0.89))
+                        .background(backgroundColor)
                         
                         
                     }
                 }
             }
             
-        }
-        .onAppear {
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
+         .onAppear {
             guideModel.fetchGuide(for: placeName)
-        }
+         }
         .alert(isPresented: $guideModel.showAlert) {
             Alert(title: Text(guideModel.alertTitle),
                   message: Text(guideModel.alertMessage),
@@ -80,6 +84,17 @@ var body: some View {
     .navigationBarHidden(true)
 
 
+    }
+    
+    //color change according to theme
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var backgroundColor: Color{
+        isDarkMode ? Color.AppPrimaryTextField : Color.AppButtonText.opacity(0.3)
+        
     }
 }
 

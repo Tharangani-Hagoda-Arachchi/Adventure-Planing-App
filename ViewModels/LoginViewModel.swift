@@ -13,11 +13,11 @@ class LoginViewModel : ObservableObject{
     
     @Published var email = ""
     @Published var password = ""
-
+    
     //error masseges
     @Published var errorEmail : String?
     @Published var errorPassword : String?
-
+    
     //validation status
     @Published var isValid = false
     
@@ -32,7 +32,7 @@ class LoginViewModel : ObservableObject{
     private var apiService = APIServices.shared
     
     
-
+    
     
     // validation check function
     func validateLoginAccount(){
@@ -40,7 +40,7 @@ class LoginViewModel : ObservableObject{
         //assign errors to nill
         errorEmail = nil
         errorPassword = nil
-
+        
         if email.isEmpty{
             errorEmail = "Enter Your Email"
         }
@@ -50,7 +50,7 @@ class LoginViewModel : ObservableObject{
         }
         
         isValid = (errorEmail == nil && errorPassword == nil )
-           
+        
         
     }
     
@@ -72,9 +72,9 @@ class LoginViewModel : ObservableObject{
                 }
             case .failure(let error):
                 self.showErrorAlert(title: "Error", message: error.localizedDescription)
-
+                
             }
-        
+            
             
         }
         
@@ -87,10 +87,14 @@ class LoginViewModel : ObservableObject{
         
         UserDefaults.standard.set(email, forKey: "LastRegisteredEmail")
         
+        if let passwordData = (self.password.isEmpty ? nil : self.password.data(using: .utf8)) {
+            KeyChainHelper.shared.save(service: "AdventureAPP", account: email, data: passwordData)
+        }
+        
         self.email = ""
         self.password = ""
         self.isLogin = true
-
+        
     }
     
     // function for show error alerts
@@ -99,7 +103,7 @@ class LoginViewModel : ObservableObject{
         alertMessage = message
         showAlert = true
     }
-
+    
     
     //get save email function
     private func getSavedEmail() -> String?{
@@ -135,7 +139,7 @@ class LoginViewModel : ObservableObject{
             }
         }
     }
-        
+    
     
 }
 

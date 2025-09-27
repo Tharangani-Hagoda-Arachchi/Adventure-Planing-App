@@ -9,10 +9,13 @@ import SwiftUI
 
 struct SearchResultView: View {
     
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     let searchText: String
     
     @ObservedObject  var adventurePlaceModel: AdventuePlaceViewModel
     @ObservedObject  var packageModel:  PackageViewModel
+    
     
     let onAdventureSelect: (AdventurePlace) -> Void
     let onPackageSelect: (Packages) -> Void
@@ -39,6 +42,7 @@ struct SearchResultView: View {
                             VStack{
                                 Text("Adventure Places")
                                     .font(.headline)
+                                    .foregroundColor(fontColor)
                                     .fontWeight(.semibold)
                                     .padding(.leading, 5)
                                 
@@ -71,15 +75,15 @@ struct SearchResultView: View {
                                             }
                                             
                                             Text(adventure.name)
-                                                .foregroundColor(Color.AppPrimaryTextField)
+                                                .foregroundColor(fontColor)
                                                 .font(.cardSubTitleText)
-                                                //.lineLimit(2)
+                                            //.lineLimit(2)
                                             
                                             Spacer()
-
+                                            
                                         }
                                         .padding()
-                                        .background(Color.AppButtonText)
+                                        .background(cardbackgroundColor)
                                         .cornerRadius(12)
                                         .shadow(color: Color.AppPrimaryTextField.opacity(0.05), radius: 4, x: 0, y: 2 )
                                     }
@@ -88,7 +92,7 @@ struct SearchResultView: View {
                             }
                             
                         }
-
+                        
                     }
                     
                     
@@ -100,6 +104,7 @@ struct SearchResultView: View {
                                 Text("Packages")
                                     .font(.headline)
                                     .fontWeight(.semibold)
+                                    .foregroundColor(fontColor)
                                 
                                 ForEach(packageModel.packages, id: \.id){ package in
                                     Button(action: {
@@ -130,14 +135,14 @@ struct SearchResultView: View {
                                             }
                                             
                                             Text(package.name)
-                                                .foregroundColor(Color.AppPrimaryTextField)
+                                                .foregroundColor(fontColor)
                                                 .font(.cardSubTitleText)
-                                                //.lineLimit(2)
+                                            //.lineLimit(2)
                                             Spacer()
-
+                                            
                                         }
                                         .padding()
-                                        .background(Color.AppButtonText)
+                                        .background(cardbackgroundColor)
                                         .cornerRadius(12)
                                         .shadow(color: Color.AppPrimaryTextField.opacity(0.05), radius: 4, x: 0, y: 2 )
                                     }
@@ -147,12 +152,12 @@ struct SearchResultView: View {
                             }
                             
                         }
-
+                        
                     }
                     
                 }
                 
-            }
+            }.preferredColorScheme(isDarkMode ? .dark : .light)
         }
         .onChange(of: searchText){ newValue in
             let query = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -166,6 +171,17 @@ struct SearchResultView: View {
             
         }
     }
+    
+    private var cardbackgroundColor: Color{
+        isDarkMode ? Color.gray: Color.AppButtonText
+        
+    }
+    
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
 }
 
 //#Preview {

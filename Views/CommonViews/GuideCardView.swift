@@ -13,6 +13,9 @@ struct GuideCardView: View {
     
     @State private var selectedGuideId: String? = nil
     
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     @State private var navigateToDetail = false
     
     var body: some View {
@@ -47,7 +50,7 @@ struct GuideCardView: View {
                         //name
                         Text(guide.guideName)
                             .font(Font.cardTitleText)
-                            .foregroundColor(Color.AppPrimaryTextField)
+                            .foregroundColor(fontColor)
                        Spacer()
                         
                         //rating
@@ -59,7 +62,7 @@ struct GuideCardView: View {
                     
                     Text(guide.guideAdventureCategory)
                         .font(Font.cardSubTitleSmallText)
-                        .foregroundColor(Color.AppPrimaryTextField)
+                        .foregroundColor(fontColor)
                     
                     Text("USD \(String(format: "%.2f", guide.guideFee))")
                         .font(Font.cardSubTitleText)
@@ -67,11 +70,11 @@ struct GuideCardView: View {
                     
                     Text("Category: \(guide.guideCategory)")
                         .font(Font.cardSubTitleSmallText)
-                        .foregroundColor(Color.AppPrimaryTextField)
+                        .foregroundColor(fontColor)
                     
                          Text("Language: \(guide.language)")
                         .font(Font.cardSubTitleSmallText)
-                        .foregroundColor(Color.AppPrimaryTextField)
+                        .foregroundColor(fontColor)
                     
                 }
                 Spacer()
@@ -106,13 +109,27 @@ struct GuideCardView: View {
                 
             }
             .padding()
-            .background(Color.AppButtonText)
+            .background(cardbackgroundColor)
             .cornerRadius(15)
             .shadow(color: .gray.opacity(0.3), radius: 5, x: 0, y: 2)
             .padding(.horizontal)
+            .preferredColorScheme(isDarkMode ? .dark : .light)
 
         
         }
+   
+    //color change according to theme
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var cardbackgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.2) : Color.AppButtonText
+        
+    }
+    
+
     
 
 

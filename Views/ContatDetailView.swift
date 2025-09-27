@@ -95,17 +95,7 @@ struct ContatDetailView: View {
                 .padding()
                 Spacer()
             }
-            .navigationDestination(isPresented: $navigateToPayment) {
-                PaymentView(
-                    bookingType: bookingType,
-                    date: date,
-                    travellers: travellers,
-                    name: name,
-                    phone: phone,
-                    address: address,
-                    email: email
-                )
-            }
+
         }.navigationBarHidden(true)
         
         

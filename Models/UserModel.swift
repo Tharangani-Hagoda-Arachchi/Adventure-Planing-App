@@ -6,3 +6,18 @@
 //
 
 import Foundation
+
+struct User: Identifiable, Codable {
+    let id: String
+    let name: String
+    let email: String
+    let phone: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case email
+        case phone
+    }
+
+}

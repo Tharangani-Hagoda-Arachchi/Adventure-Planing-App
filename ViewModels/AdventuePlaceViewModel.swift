@@ -26,6 +26,37 @@ class AdventuePlaceViewModel : ObservableObject{
     //load status
     @Published var isLoad = false
     
+    //backend API call for fetch all adventure places
+    func fetchAllAdventure(){
+        guard let token = TokenManager.shared.getAcessToken() else{
+            handleInvalidToken()
+            return
+        }
+        
+        isLoad = true
+        
+        apiService.fetchAllAdventurePlaces { [weak self] result in
+            guard let self = self else { return }
+            
+            self.isLoad = false
+            
+            switch result{
+            case .success(let adventures):
+                self.places = adventures
+            case .failure(let error):
+                switch error{
+                case .httpError(let code) where code == 401:
+                    self.handleInvalidToken()
+                default:
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                }
+
+            }
+            
+        }
+ 
+    }
+    
     //backend API call for fetch adventure places by category
     func fetchPlacesByCategory(for categoryId: String, completion: @escaping ([AdventurePlace]) -> Void = {_ in}){
         
@@ -156,9 +187,9 @@ class AdventuePlaceViewModel : ObservableObject{
         alertMessage = message
         showAlert = true
     }
+    
+    
 
-    
-    
     
     
 }

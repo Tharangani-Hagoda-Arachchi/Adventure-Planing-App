@@ -31,19 +31,18 @@ class TokenManager{
     // session logout not remove face ID
     func sessionLogout() {
         KeyChainHelper.shared.delete(service: service, account: accessToken)
-        UserDefaults.standard.removeObject(forKey: "LastRegisteredEmail")
+        //UserDefaults.standard.removeObject(forKey: "LastRegisteredEmail")
     }
-      
     
     
     // full logout
     func logout(savedEmail: String) {
         sessionLogout()
-            KeyChainHelper.shared.delete(service: service, account: savedEmail)
-           
-    }
+        KeyChainHelper.shared.delete(service: service, account: savedEmail)
         
-   
-
+    }
+    
+    
+    
     
 }

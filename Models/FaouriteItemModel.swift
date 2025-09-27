@@ -6,9 +6,14 @@
 //
 
 import Foundation
+import CoreData
 
-struct FavouriteItemModel: Identifiable{
-    let id: UUID
-    let image: String
-    let title: String
+struct FavouriteItemModel: Identifiable {
+    let id: String
+    let name: String              
+    let siteImage: String?
+    let openTime: String?
+    let placeDescription: String?
+    let ratings: Double?
+    //let email: String?
 }

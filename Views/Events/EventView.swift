@@ -8,48 +8,82 @@
 import SwiftUI
 
 struct EventView: View {
-    @ObservedObject var viewModel: AdventurePlannerViewModel
+    @StateObject  var viewModel: FavouriteViewModel
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    @StateObject  var adventurePlanerVModel: AdventurePlannerViewModel
     
     var body: some View {
         VStack{
             //top navigation view
             TopNavigationView()
             
-            Text("Sheduled Adventures")
+            Text("Scheduled Adventures")
                 .font(Font.buttonLargeText)
-                .foregroundColor(Color.AppPrimaryTextField)
+                .foregroundColor(fontColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal,20)
             
             List {
-                        if viewModel.adventureEvents.isEmpty {
-                            Text("No scheduled adventures")
-                                .foregroundColor(.gray)
-                        } else {
-                            ForEach(viewModel.adventureEvents) { event in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(event.title).font(.headline)
-                                    Text(event.location).font(.subheadline).foregroundColor(.secondary)
-                                    Text("\(event.startDateTime.formatted(date: .abbreviated, time: .shortened)) - \(event.endDateTime.formatted(date: .abbreviated, time: .shortened))")
-                                        .font(.footnote)
+                if viewModel.event.isEmpty {
+                    Text("No scheduled adventures")
+                        .foregroundColor(.gray)
+                } else {
+                    ForEach(viewModel.event, id: \.id) { event in
+                        HStack(spacing: 12){
+                            Image(systemName: "checkmark.seal.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(.AppPrimary)
+                                .padding(6)
+                                .background(Circle().fill(Color(.systemGray6)))
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(event.title ?? "Untitle")
+                                    .font(.headline)
+                                if let location = event.location {
+                                    Text(location)
+                                        .font(.cardTitleText)
+                                        .foregroundColor(.secondary)
+                                }
+                                if let start = event.startDateTime,
+                                   let end = event.endDateTime {
+                                    Text("\(start.formatted(date: .abbreviated, time: .shortened)) - \(end.formatted(date: .abbreviated, time: .shortened))")
+                                        .font(.cardText)
                                         .foregroundColor(.gray)
                                 }
                             }
-                            .onDelete { indexSet in
-                                indexSet.forEach { idx in
-                                    let event = viewModel.adventureEvents[idx]
-                                    viewModel.deleteEvent(event)
-                                }
+                            
+                        }.padding(.vertical,8)
+
+                    }
+                    .onDelete { indexSet in
+                        indexSet.forEach { idx in
+                            let event = viewModel.event[idx]
+                            if let id = event.id {
+                                viewModel.removeEvent(planId: id, adventurePlanerVModel: adventurePlanerVModel)
                             }
                         }
                     }
-
-
+                }
+            }
             
-        }
-
+            
+            
+        }.preferredColorScheme(isDarkMode ? .dark : .light)
         .navigationBarHidden(true)
-                .toolbar { EditButton() }
+        .toolbar { EditButton() }
+        .onAppear {
+            viewModel.loadEvent()
+            adventurePlanerVModel.requestAccess()
+            adventurePlanerVModel.requestNotificationAccess()
+        }
+        
+    }
+    
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
     }
 }
 

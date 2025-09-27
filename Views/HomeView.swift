@@ -10,11 +10,13 @@ import SwiftUI
 struct HomeView: View {
     
     @StateObject private var adventureModel = AdventureViewModel()
+    @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
+    @StateObject private var packageModel = PackageViewModel()
     
     @State private var selectedCategoryId: String? = nil
     @State private var showPlaces = false
     
-    @AppStorage("isLogin") private var isLogin: Bool = false
+    @AppStorage("isLogin") private var isLogin: Bool = true
     //for dark mode
     @AppStorage("isDarkMode") private var isDarkMode = false
     
@@ -96,9 +98,31 @@ struct HomeView: View {
                                     
                                 }
                                 
+                                
+                                
                             ).padding(.horizontal,20)
                         
                     }
+                    .padding(.bottom)
+                    // trending places
+                    Text("Trending Adventure places")
+                        .font(Font.primarysBoldText)
+                        .foregroundColor(fontColor)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                    
+                    TrendingAdventures(places: adventurePlaceModel.places, topCount: 5)
+                        .padding(.bottom)
+                    
+                    Text("Trending Packages")
+                        .font(Font.primarysBoldText)
+                        .foregroundColor(fontColor)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                    
+                    TrendingPlacesView(packages: packageModel.packages, topCount: 5)
+
+
                 }
                 
                 
@@ -126,6 +150,8 @@ struct HomeView: View {
             
         }.onAppear{
             adventureModel.fetchAdventure()
+            adventurePlaceModel.fetchAllAdventure()
+            packageModel.fetchAllPackages()
         }
         
         //navigate adventure view with selected category

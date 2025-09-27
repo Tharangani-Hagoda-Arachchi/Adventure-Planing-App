@@ -21,10 +21,9 @@ struct BottemTabBarView: View {
     @Binding var selectedTab: Tab
     @Binding var showSearch: Bool
     
-    //@State private var homePath = NavigationPath()
-   // @State private var mapPath = NavigationPath()
-   // @State private var eventPath = NavigationPath()
-   // @State private var packagePath = NavigationPath()
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+
     
     var body: some View {
  
@@ -54,10 +53,10 @@ struct BottemTabBarView: View {
                     
                 }
                 .padding(.horizontal, 16)
-                .background(Color.AppButtonText.ignoresSafeArea(edges: .bottom))
+                .background(tabBarBackgroundColor.ignoresSafeArea(edges: .bottom))
                 .cornerRadius(20)
                 .overlay(Capsule().stroke(Color.AppPrimary, lineWidth: 1))
-                .shadow(radius: 4)
+                .shadow(color: tabBarShadowColor,radius: 4)
                 
                 //serch icon
                 Button(action:{
@@ -66,18 +65,41 @@ struct BottemTabBarView: View {
                 }) {
                     Image(systemName: showSearch ? "xmark" : "magnifyingglass")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(searchiconColor)
                         .padding()
-                        .background(Circle().fill(Color.white))
+                        .background(Circle().fill(searchBackgroundColor))
                         .overlay(Circle().stroke(Color.AppPrimary, lineWidth: 1))
-                          .shadow(radius: 4)
+                        .shadow(color: tabBarShadowColor,radius: 4)
                           .animation(.easeInOut(duration: 0.2), value: showSearch)
                 }
                 
             }.padding(.horizontal,16)
              .padding(.bottom,5)
+             .preferredColorScheme(isDarkMode ? .dark : .light)
                 
             }
+    
+    //color according to mode
+    private var tabBarBackgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.2) : Color.AppButtonText
+        
+    }
+    
+    private var tabBarShadowColor: Color{
+        isDarkMode ? Color.AppButtonText.opacity(0.1) : Color.AppPrimaryTextField.opacity(0.3)
+        
+    }
+    
+    private var searchiconColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
+    
+    private var searchBackgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.3) : Color.AppButtonText
+        
+    }
+      
             
 
             

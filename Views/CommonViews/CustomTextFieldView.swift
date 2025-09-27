@@ -17,13 +17,16 @@ struct CustomTextFieldView: View {
     @State private var isPasswordVisible: Bool = false
     @FocusState private var isTextFieldFocused: Bool
     
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     var displayError: Bool = false
     
     var body: some View {
         HStack{
             //icon
             Image(systemName: icon)
-                .foregroundColor(Color.AppPrimaryTextField.opacity(0.51))
+                .foregroundColor(fontColor)
             
             // for scure text fields (passwords)
             if isSecure{
@@ -52,7 +55,7 @@ struct CustomTextFieldView: View {
                     isTextFieldFocused = true
                 }) {
                     Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                        .foregroundColor(Color.AppPrimaryTextField.opacity(0.51))
+                        .foregroundColor(fontColor)
                 }
             } else{
                 TextField(placeHolder, text: $text)
@@ -64,7 +67,7 @@ struct CustomTextFieldView: View {
             }
         }
         .padding()
-        .background(Color.AppPrimaryTextField.opacity(0.1))
+        .background(backgroundColor)
         .cornerRadius(15)
         .overlay(
             RoundedRectangle(cornerRadius: 15)
@@ -74,7 +77,19 @@ struct CustomTextFieldView: View {
         
         //text field focus annimation
         .animation(.easeOut(duration: 0.2), value: isTextFieldFocused)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
        
+    }
+    
+    //color according to mode
+    private var fontColor: Color{
+        isDarkMode ? Color.gray : Color.AppPrimaryTextField.opacity(0.51)
+        
+    }
+    
+    private var backgroundColor: Color{
+        isDarkMode ? Color.gray.opacity(0.2) : Color.AppPrimaryTextField.opacity(0.1)
+        
     }
 }
 
