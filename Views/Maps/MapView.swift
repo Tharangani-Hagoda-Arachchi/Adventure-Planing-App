@@ -97,7 +97,18 @@ struct MapView: View {
                     }
                 }
                 .onChange(of: adventurePlaceModel.places){ _, newPlace in
-                    adjustCamera(places: newPlace)
+                    if let place = selectedPlace {
+                        let region = MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude),
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // Zoom to that place
+                        )
+                        withAnimation(.easeInOut(duration: 1.0) ){
+                            cameraPosition = .region(region)
+                        }
+                    }else{
+                        adjustCamera(places: adventurePlaceModel.places)
+                    }
+                    
                     
                 }
                 //.navigationBarHidden(true)

@@ -59,7 +59,8 @@ struct SearchView: View {
                     SearchResultView(
                         searchText: searchText,
                         adventurePlaceModel: adventurePlaceModel,
-                        packageModel: packageModel,                            onAdventureSelect: { place in
+                        packageModel: packageModel,
+                        onAdventureSelect: { place in
                             selectedTab = .home
                             isPresented = false
                         },

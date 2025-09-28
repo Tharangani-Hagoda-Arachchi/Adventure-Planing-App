@@ -15,8 +15,12 @@ struct PackageBookingView: View {
     let time: String
     let meal: String
     
+    let package: Packages
+    
     @State private var date = Date()
     @State private var travellers = 1
+    
+    @State private var  goToContact = false
     
     var body: some View {
         NavigationStack{
@@ -80,7 +84,7 @@ struct PackageBookingView: View {
                 
                 //reserve now and pay later button
                 CustomPrimaryButtonView(title: "Reserve Now and Pay Later"){
-                    //goToBooking = true
+                    goToContact = true
                 }
                 .padding(.top, 40)
                 .padding()
@@ -92,7 +96,13 @@ struct PackageBookingView: View {
             }
         }.preferredColorScheme(isDarkMode ? .dark : .light)
          .navigationBarHidden(true)
-        
+         .navigationDestination(isPresented: $goToContact){ ContatDetailView(
+            bookingType: .package(package),
+            date: $date,
+            travellers: $travellers
+            
+         )
+         }
     }
     
     //for format date

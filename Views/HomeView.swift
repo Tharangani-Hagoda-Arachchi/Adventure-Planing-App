@@ -104,24 +104,32 @@ struct HomeView: View {
                         
                     }
                     .padding(.bottom)
-                    // trending places
-                    Text("Trending Adventure places")
-                        .font(Font.primarysBoldText)
-                        .foregroundColor(fontColor)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
                     
-                    TrendingAdventures(places: adventurePlaceModel.places, topCount: 5)
-                        .padding(.bottom)
+                    VStack{
+                        
+                        // trending places
+                        Text("Trending Adventure places")
+                            .font(Font.primarysBoldText)
+                            .foregroundColor(fontColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                        
+                        TrendingAdventures(places: adventurePlaceModel.places, topCount: 5)
+                            .padding(.bottom)
+                        
+                    }
                     
-                    Text("Trending Packages")
-                        .font(Font.primarysBoldText)
-                        .foregroundColor(fontColor)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
-                    
-                    TrendingPlacesView(packages: packageModel.packages, topCount: 5)
-
+                    VStack{
+                        //trending packages
+                        Text("Trending Packages")
+                            .font(Font.primarysBoldText)
+                            .foregroundColor(fontColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                        
+                        TrendingPlacesView(packages: packageModel.packages, topCount: 5)
+                        
+                    }
 
                 }
                 

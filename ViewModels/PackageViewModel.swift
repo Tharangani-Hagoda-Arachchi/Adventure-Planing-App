@@ -39,22 +39,26 @@ class PackageViewModel : ObservableObject{
         apiService.fetchPackages { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let packages):
-                self.packages = packages
-                completion(packages)
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async {
+                self.isLoad = false
+                
+                switch result{
+                case .success(let packages):
+                    self.packages = packages
+                    completion(packages)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
+                
             }
             
+
         }
  
     }

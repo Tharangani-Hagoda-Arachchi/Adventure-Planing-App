@@ -38,20 +38,25 @@ class AdventuePlaceViewModel : ObservableObject{
         apiService.fetchAllAdventurePlaces { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let adventures):
-                self.places = adventures
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async{
+                
+                self.isLoad = false
+                
+                switch result{
+                case .success(let adventures):
+                    self.places = adventures
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
+                
             }
+
             
         }
  
@@ -70,21 +75,26 @@ class AdventuePlaceViewModel : ObservableObject{
         apiService.fetchAdventurePlaces(by: categoryId) { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let places):
-                self.places = places
-                completion(places)
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async{
+                self.isLoad = false
+                
+                switch result{
+                case .success(let places):
+                    self.places = places
+                    completion(places)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
+                
             }
+            
+
             
         }
  
@@ -103,21 +113,25 @@ class AdventuePlaceViewModel : ObservableObject{
         apiService.fetchAdventurePlace(by: id) { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let place):
-                self.placeDetail = place
-                completion(place)
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async{
+                self.isLoad = false
+                
+                switch result{
+                case .success(let place):
+                    self.placeDetail = place
+                    completion(place)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
+                
             }
+
             
         }
  

@@ -10,6 +10,7 @@ import SwiftUI
 struct PackageDetailView: View {
     let packageId: String
     @StateObject private var packageVModel = PackageViewModel()
+    @StateObject private var favouriteVModel = FavouriteViewModel()
     // for dark mode
     @AppStorage("isDarkMode") private var isDarkMode = false
     @Environment(\.dismiss) private var dismiss
@@ -113,9 +114,19 @@ struct PackageDetailView: View {
                             
                             HStack(spacing: 16){
                                 //favourite
-                                IconCircleButtonView(systemImage: "heart", backgroundColor: Color.red.opacity(0.2)){
+                                IconCircleButtonView(
+                                    systemImage:favouriteVModel.isFavouritePackages(packageId: detail.id) ? "heart.fill" : "heart",
+                                    backgroundColor: favouriteVModel.isFavouritePackages(packageId: detail.id) ? Color.red.opacity(0.2) : Color.gray.opacity(0.2)
+                                ){
+                                    if favouriteVModel.isFavouritePackages(packageId: detail.id){
+                                        favouriteVModel.removeFavouritePackages(packageId: detail.id)
+                                    }else{
+                                        favouriteVModel.addFavouritePackages(packages: detail)
+                                    }
                                     
                                 }
+                                .foregroundColor(favouriteVModel.isFavourite(placeId: detail.id) ? .red : .gray)
+                                
                                 //book now button
                                 CustomPrimaryButtonView(title: "Reserve Now"){
                                     goToBooking = true
@@ -127,7 +138,9 @@ struct PackageDetailView: View {
                                         name: detail.name,
                                         price: detail.price,
                                         time: detail.time,
-                                        meal: detail.mealAvailability
+                                        meal: detail.mealAvailability,
+                                        package: detail,
+                                        
                                     ),
                                 isActive: $goToBooking,
                                 label: { EmptyView() }

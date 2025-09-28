@@ -77,8 +77,8 @@ struct CreateAccountView: View {
                                     //call register functin in view model
                                     registerViewModel.useRegistration()
                                 }
-                            
-                                    
+                                
+                                
                             }
                             .padding(.top, 20)
                             

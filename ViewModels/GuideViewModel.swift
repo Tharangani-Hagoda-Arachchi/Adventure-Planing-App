@@ -41,21 +41,25 @@ class GuideViewModel : ObservableObject{
         apiService.fetchGuides(by: placeName) { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let guides):
-                self.guides = guides
-                completion(guides)
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async {
+                self.isLoad = false
+                
+                switch result{
+                case .success(let guides):
+                    self.guides = guides
+                    completion(guides)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
+                
             }
+
             
         }
  
@@ -68,27 +72,31 @@ class GuideViewModel : ObservableObject{
             handleInvalidToken()
             return
         }
-        
+
+
         isLoad = true
         
         apiService.fetchGuide(by: id) { [weak self] result in
             guard let self = self else { return }
             
-            self.isLoad = false
-            
-            switch result{
-            case .success(let guide):
-                self.guideDetail = guide
-                completion(guide)
-            case .failure(let error):
-                switch error{
-                case .httpError(let code) where code == 401:
-                    self.handleInvalidToken()
-                default:
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
-                }
+            DispatchQueue.main.async {
+                self.isLoad = false
+                
+                switch result{
+                case .success(let guide):
+                    self.guideDetail = guide
+                    completion(guide)
+                case .failure(let error):
+                    switch error{
+                    case .httpError(let code) where code == 401:
+                        self.handleInvalidToken()
+                    default:
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
 
+                }
             }
+
             
         }
  

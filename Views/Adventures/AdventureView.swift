@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AdventureView: View {
     @State private var selectedTab: Tab = .home
-    @State private var showSearch: Bool = false 
+    @State private var showSearch: Bool = false
     
     let categoryId: String
     
@@ -35,37 +35,54 @@ struct AdventureView: View {
                 .padding(.horizontal,20)
         }
         ScrollView{
-            LazyVStack(spacing: 16){
-                ForEach(adventurePlaceModel.places){ place in
-                    NavigationLink(destination: AdventureDetailView(placeId: place.id)) {
-                        AdventureCadView(adventurePlace: place)
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal)
-                        
-                    }
-                    .buttonStyle(PlainButtonStyle())  
-                    
-                }
-            }
-            .padding(.top, 16)
-            
-            //alerts
-            .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
-                Alert(
-                    title: Text("Session Expired"),
-                    message: Text("Please login again"),
-                    dismissButton: .default(Text("OK")){
-                        DispatchQueue.main.async{
-                            TokenManager.shared.sessionLogout()
-                            isLogin = false
-                            adventurePlaceModel.showSessionExpireAlert = false
+            if adventurePlaceModel.isLoad{
+                //progressive view
+                ProgressView("Loading Adventures...")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding()
+            } else if adventurePlaceModel.places.isEmpty{
+                //empty text
+                Text("No adventures available for this category.")
+                    .foregroundColor(fontColor)
+                    .font(.cardSubTitleText)
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else{
+                //data load
+                LazyVStack(spacing: 16){
+                    ForEach(adventurePlaceModel.places){ place in
+                        NavigationLink(destination: AdventureDetailView(placeId: place.id)) {
+                            AdventureCadView(adventurePlace: place)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
                             
                         }
-                        
+                        .buttonStyle(PlainButtonStyle())
                         
                     }
-                )
+                }.padding(.top, 16)
+                
+                //alerts
+                    .alert(isPresented:$adventurePlaceModel.showSessionExpireAlert){
+                        Alert(
+                            title: Text("Session Expired"),
+                            message: Text("Please login again"),
+                            dismissButton: .default(Text("OK")){
+                                DispatchQueue.main.async{
+                                    TokenManager.shared.sessionLogout()
+                                    isLogin = false
+                                    adventurePlaceModel.showSessionExpireAlert = false
+                                    
+                                }
+                                
+                                
+                            }
+                        )
+                    }
+                
             }
+            
             
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)

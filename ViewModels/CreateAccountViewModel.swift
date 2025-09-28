@@ -100,22 +100,26 @@ class CreateAccountViewModel : ObservableObject{
     func useRegistration(){
         apiService.registerUser(name: name, email: email, phone: phone, password: password) { [weak self] result in
             guard let self = self else{return}
-            
-            switch result {
-            case .success(let response):
-                if let token = response.accessToken{
-                    self.handleSuccessfulRegistration(token: token)
-                } else{
-                    self.showErrorAlert(title: "Error", message: "Failed to create account")
-                }
-            case .failure(let error):
-                if error.localizedDescription.contains("409"){
-                    self.showErrorAlert(title: "Failed Acount Creation", message: "Email is already registered")
+            DispatchQueue.main.async {
+                switch result {
                     
-                } else{
-                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                case .success(let response):
+                    if let token = response.accessToken{
+                        self.handleSuccessfulRegistration(token: token)
+                    } else{
+                        self.showErrorAlert(title: "Error", message: "Failed to create account")
+                    }
+                case .failure(let error):
+                    if error.localizedDescription.contains("409"){
+                        self.showErrorAlert(title: "Failed Acount Creation", message: "Email is already registered")
+                        
+                    } else{
+                        self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                    }
                 }
+                
             }
+
         }
     }
     

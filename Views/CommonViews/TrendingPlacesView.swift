@@ -26,7 +26,13 @@ struct TrendingPlacesView: View {
             ScrollView(.horizontal, showsIndicators: false){
                 HStack(spacing: 16){
                     ForEach(topRatedPlaces, id: \.id){ package in
-                        TrendingAdventureCard(package: package )
+                        //navigate to detail view
+                        NavigationLink(
+                            destination: PackageDetailView(packageId: package.id)
+                        ){
+                            TrendingAdventureCard(package: package )
+                        }
+                        
                     }
                 }
 

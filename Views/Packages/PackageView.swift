@@ -16,6 +16,9 @@ struct PackageView: View {
     // for dark mode
     @AppStorage("isDarkMode") private var isDarkMode = false
     //@AppStorage("isLogin") private var isLogin: Bool = false
+    
+    //for place base filtering
+    var placeName: String? = nil
  
     var body: some View {
         
@@ -81,7 +84,12 @@ struct PackageView: View {
             
         }.onAppear{
             adventureViewModel.fetchAdventure()
-            packageModel.fetchAllPackages()
+            if let plce = placeName{
+                packageModel.serchPackagesByName(query: plce)
+            }else{
+                packageModel.fetchAllPackages()
+            }
+           
             
         }
         .navigationBarHidden(true)

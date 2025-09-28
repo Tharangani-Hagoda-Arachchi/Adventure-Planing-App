@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		EC1E3B9E2E861C5000254734 /* AdventurePlacesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EC1E3B9C2E861C4F00254734 /* AdventurePlacesModel.xcdatamodeld */; };
+		EC1E3D192E8873C200254734 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1E3D182E8873C200254734 /* Intents.framework */; };
+		EC1E3D1B2E8873D200254734 /* IntentsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1E3D1A2E8873D200254734 /* IntentsUI.framework */; };
+		EC1E3D1D2E8873E500254734 /* Speech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1E3D1C2E8873E500254734 /* Speech.framework */; };
+		EC1E3D1F2E88758A00254734 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EC1E3D1E2E88758A00254734 /* Intents.intentdefinition */; };
+		EC1E3D232E887B4100254734 /* NotificationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1E3D222E887B4100254734 /* NotificationExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +34,11 @@
 
 /* Begin PBXFileReference section */
 		EC1E3B9D2E861C4F00254734 /* AdventurePlacesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventurePlacesModel.xcdatamodel; sourceTree = "<group>"; };
+		EC1E3D182E8873C200254734 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		EC1E3D1A2E8873D200254734 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		EC1E3D1C2E8873E500254734 /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = System/Library/Frameworks/Speech.framework; sourceTree = SDKROOT; };
+		EC1E3D1E2E88758A00254734 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		EC1E3D222E887B4100254734 /* NotificationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationExtensions.swift; sourceTree = "<group>"; };
 		EC9190732E50C22E00DE689E /* Adventure Planing App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Adventure Planing App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC9190802E50C23200DE689E /* Adventure Planing AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Adventure Planing AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC91908A2E50C23200DE689E /* Adventure Planing AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Adventure Planing AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +92,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC1E3D1B2E8873D200254734 /* IntentsUI.framework in Frameworks */,
+				EC1E3D1D2E8873E500254734 /* Speech.framework in Frameworks */,
+				EC1E3D192E8873C200254734 /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,9 +115,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC1E3D172E8873C100254734 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC1E3D1C2E8873E500254734 /* Speech.framework */,
+				EC1E3D1A2E8873D200254734 /* IntentsUI.framework */,
+				EC1E3D182E8873C200254734 /* Intents.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EC91906A2E50C22E00DE689E = {
 			isa = PBXGroup;
 			children = (
+				EC1E3D222E887B4100254734 /* NotificationExtensions.swift */,
+				EC1E3D1E2E88758A00254734 /* Intents.intentdefinition */,
 				EC1E3B9C2E861C4F00254734 /* AdventurePlacesModel.xcdatamodeld */,
 				EC63009B2E56C3D800712321 /* Services */,
 				EC9190B62E50C97E00DE689E /* Resources */,
@@ -114,6 +139,7 @@
 				EC9190752E50C22E00DE689E /* Adventure Planing App */,
 				EC9190832E50C23200DE689E /* Adventure Planing AppTests */,
 				EC91908D2E50C23200DE689E /* Adventure Planing AppUITests */,
+				EC1E3D172E8873C100254734 /* Frameworks */,
 				EC9190742E50C22E00DE689E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -277,6 +303,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC1E3D1F2E88758A00254734 /* Intents.intentdefinition in Sources */,
+				EC1E3D232E887B4100254734 /* NotificationExtensions.swift in Sources */,
 				EC1E3B9E2E861C5000254734 /* AdventurePlacesModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,7 +472,10 @@
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Acccess calander add event";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "this app use face id for ogin";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "loction use for show in map";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is needed for voice search functionality";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "access remenders";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Use Siri to quickly search for adventures and travel packages in our app";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to search for adventures and packages when you use voice commands";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -477,7 +508,10 @@
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Acccess calander add event";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "this app use face id for ogin";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "loction use for show in map";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is needed for voice search functionality";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "access remenders";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Use Siri to quickly search for adventures and travel packages in our app";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to search for adventures and packages when you use voice commands";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

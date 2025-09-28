@@ -19,15 +19,19 @@ struct TopNavigationView: View {
     @Environment(\.dismiss) private var dismiss
     
     var showBackButton: Bool = true
+    var onBack: (() -> Void)? = nil
     
     var body: some View {
         
         HStack(spacing:12){
             if showBackButton{
-                
-                Button(action: {
-                    dismiss()  // default back
-                }) {
+                Button{
+                    if let onBack = onBack{
+                        onBack()
+                    }else{
+                        dismiss()
+                    }
+                }label:{
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .foregroundColor(backButtonColor)

@@ -72,6 +72,9 @@ struct PackageCardView: View {
                     
                 }
                 
+                //rating
+                RatingStarView(rating: package.ratings)
+                    .padding(.bottom)
                 
                 Text("USD \(String(format: "%.2f", package.price))")
                     .font(Font.cardSubTitleText)

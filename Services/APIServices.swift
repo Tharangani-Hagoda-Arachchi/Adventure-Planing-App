@@ -378,6 +378,53 @@ class APIServices{
     }
     
     
+    //function for save booking details
+    func saveBooking(
+        name: String,
+        email: String,
+        phone: String,
+        address: String,
+        date: Date,
+        travellers: Int,
+        bookingTypeId: String,
+        pricePerPerson: Double,
+        totalPrice: Double,
+        guideId: String? = nil,
+        packageId: String? = nil,
+  
+
+        
+        completion: @escaping (Result<BookingResponse, APIError>) -> Void){
+            
+            var body: [String: Any] = [
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "address": address,
+                "date": ISO8601DateFormatter().string(from: date),
+                "travellers": travellers,
+                "bookingTypeId": bookingTypeId,
+                "pricePerPerson": pricePerPerson,
+                "totalPrice": totalPrice
+            ]
+            
+            if let guideId = guideId {
+                body["guideId"] = guideId
+            }
+            if let packageId = packageId {
+                body["packageId"] = packageId
+            }
+            
+            performRequest(
+                endpoint: "bookings",
+                method: .POST,
+                body: body,
+                responceType: BookingResponse.self,
+                completion: completion
+            )
+        }
+    
+    
     //create url function
     private func createURL(for endpoint: String) -> URL?{
         return URL(string: "\(baseURL)/\(endpoint)")

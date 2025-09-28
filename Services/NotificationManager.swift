@@ -6,3 +6,17 @@
 //
 
 import Foundation
+import Combine
+
+class NotificationManager: ObservableObject {
+    static let shared = NotificationManager()
+    private init() {}
+    
+    @Published var notifications: [NotificationModel] = []
+    
+    func addNotification(title: String, message: String){
+        let newNotification = NotificationModel(title: title, message: message)
+        notifications.insert(newNotification, at: 0)
+    }
+    
+}

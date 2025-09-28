@@ -67,11 +67,18 @@ class LoginViewModel : ObservableObject{
             case .success(let response):
                 if let success = response.success, success, let token =  response.accessToken{
                     self.handleSuccessfulRLogin(email: loginEmail, token: token)
-                } else{
+                }else{
                     self.showErrorAlert(title: "Error", message: response.message)
                 }
             case .failure(let error):
-                self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                if error.localizedDescription.contains("401"){
+                    self.showErrorAlert(title: "Failed Login", message: "Invalid Email or Password")
+                    
+                } else{
+                    self.showErrorAlert(title: "Error", message: error.localizedDescription)
+                }
+                
+
                 
             }
             

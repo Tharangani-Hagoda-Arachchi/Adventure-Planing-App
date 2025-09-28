@@ -9,24 +9,42 @@ import SwiftUI
 
 struct NotificationView: View {
     @ObservedObject var notificationManage = NotificationManager.shared
+    // for dark mode
+    @AppStorage("isDarkMode") private var isDarkMode = false
     
     var body: some View {
-        HStack(alignment:.top, spacing: 12){
-            Image(systemName: "bell.fill")
-                .foregroundColor(.white)
-                .padding(10)
-                .background(Color.red)
-                .clipped(Circle())
-            
-            
-            VStack(alignment: .leading, spacing: 4){
-                Text(notification)
+        
+        VStack{
+            if notificationManage.notifications.isEmpty{
+                VStack{
+                    Image(systemName: "bell.slash")
+                        .resizable()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(.gray)
+                        .padding()
+                    Text("No  Notifications")
+                        .foregroundColor(.gray)
+                        .font(.primarysBoldText)
+                    
+                }
+                
+            }else{
+                List(notificationManage.notifications){ notificatin in
+                    NotificationCardView(
+                        title: notificatin.title,
+                        message: notificatin.message,
+                        date: notificatin.date
+                    )
+                    .listRowSeparator(.hidden)
+                }.listStyle(PlainListStyle())
             }
-        }
-       
-    }
-}
+            
+        } .preferredColorScheme(isDarkMode ? .dark : .light)
+            .navigationTitle("Notifications")
 
-#Preview {
-    NotificationView()
+    }
+    private var fontColor: Color{
+        isDarkMode ? Color.AppButtonText : Color.AppPrimaryTextField
+        
+    }
 }

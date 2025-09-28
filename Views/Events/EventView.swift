@@ -11,11 +11,15 @@ struct EventView: View {
     @StateObject  var viewModel: FavouriteViewModel
     @AppStorage("isDarkMode") private var isDarkMode = false
     @StateObject  var adventurePlanerVModel: AdventurePlannerViewModel
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack{
-            //top navigation view
-            TopNavigationView()
+            HStack{
+
+                TopNavigationView(showBackButton: true)
+            }
+       
             
             Text("Scheduled Adventures")
                 .font(Font.buttonLargeText)

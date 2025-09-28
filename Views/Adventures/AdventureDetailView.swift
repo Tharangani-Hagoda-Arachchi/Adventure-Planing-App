@@ -18,12 +18,16 @@ struct AdventureDetailView: View {
     @AppStorage("isDarkMode") private var isDarkMode = false
     
     @StateObject private var adventurePlaceModel = AdventuePlaceViewModel()
+    @StateObject private var favouriteVModel = FavouriteViewModel()
     
     @AppStorage("isLogin") private var isLogin: Bool = false
+    
+    @State private var navigateToMap = false
     
     //for guide navigation
     @State private var navigateToGuide = false
     @State private var navigateToSchedule = false
+    @State private var navigateToPackage = false
     
     var body: some View {
         
@@ -94,8 +98,16 @@ struct AdventureDetailView: View {
                             //hire guide and package buttons
                             HStack(spacing: 16) {
                                 SecondaryRoundedActionButton(title: "Packages"){
-                                    //load packeges function
+                                    navigateToPackage = true
                                 }
+                                
+                                //hidden navigation link for package view with place name
+                                NavigationLink(
+                                    destination: PackageView(placeName: detail.name),
+                                    isActive: $navigateToPackage,
+                                    label: { EmptyView() }
+                                    
+                                )
                                 
                                 SecondaryRoundedActionButton(title: "Hire Guide"){
                                     navigateToGuide = true
@@ -124,11 +136,28 @@ struct AdventureDetailView: View {
                             
                             HStack(spacing: 16){
                                 //favourite
-                                IconCircleButtonView(systemImage: "heart", backgroundColor: Color.red.opacity(0.2)){
+                                IconCircleButtonView(
+                                    systemImage:favouriteVModel.isFavourite(placeId: detail.id) ? "heart.fill" : "heart",
+                                    backgroundColor: favouriteVModel.isFavourite(placeId: detail.id) ? Color.red.opacity(0.2) : Color.gray.opacity(0.2)
+                                ){
+                                    if favouriteVModel.isFavourite(placeId: detail.id){
+                                        favouriteVModel.removeFavouritePlaces(placeId: detail.id)
+                                    }else{
+                                        favouriteVModel.addFavouritePlaces(place: detail)
+                                    }
                                     
                                 }
+                                .foregroundColor(favouriteVModel.isFavourite(placeId: detail.id) ? .red : .gray)
+                                
                                 //view location
+                                //navigate to location
+                                NavigationLink(
+                                    destination: MapView(selectedPlace: detail),
+                                    isActive: $navigateToMap,
+                                    label: { EmptyView() }
+                                )
                                 IconCircleButtonView(systemImage: "location", backgroundColor: Color.yellow.opacity(0.2)){
+                                    navigateToMap = true
                                     
                                 }
                                 Spacer()
